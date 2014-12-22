@@ -13,25 +13,18 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AppAsset extends AssetBundle
+class PagesAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web/assets_b';
     public $css = [
-        'js/cropper/cropper.css',
-        'css/site.css',
     ];
     public $js = [
-        'js/cropper/cropper.js',
-        'js/adminModule.js',
-        'js/imageModule.js',
-        'js/filesModule.js',
-        'js/main.js',
+        'js/pagesModule.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
-        'backend\assets_b\AdminLTEAsset',
-        'backend\assets_b\PagesAsset',
+        'yii\widgets\PjaxAsset',
     ];
 }
