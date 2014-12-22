@@ -6,14 +6,18 @@ $params = array_merge(
     require(__DIR__ . '/params-local.php')
 );
 
+$modules = require((__DIR__) . '/modules.php');
+$routes = require(__DIR__ . '/routes.php');
+
 return [
     'id' => 'app-practical-a-frontend',
     'basePath' => dirname(__DIR__),
+    'language' => 'ru-RU',
     'bootstrap' => ['log'],
-    'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute' => 'pages/default/page',
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\modules\user\models\User',
             'enableAutoLogin' => true,
         ],
         'log' => [
@@ -26,8 +30,12 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
-        ]
+            'errorAction' => '/pages/default/error',
+        ],
+        'urlManager' => [
+            'rules' => $routes,
+        ],
     ],
+    'modules' => $modules,
     'params' => $params,
 ];

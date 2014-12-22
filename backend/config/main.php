@@ -6,16 +6,21 @@ $params = array_merge(
     require(__DIR__ . '/params-local.php')
 );
 
+$modules = require((__DIR__) . '/modules.php');
+$routes = require(__DIR__ . '/routes.php');
+
 return [
     'id' => 'app-practical-a-backend',
     'basePath' => dirname(__DIR__),
-    'controllerNamespace' => 'backend\controllers',
+    'language' => 'ru-RU',
+    'defaultRoute' => 'main/default/index',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => $modules,
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\modules\user\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => '@web/login',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -29,6 +34,12 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'urlManager' => [
+            'rules' => $routes,
+        ],
     ],
     'params' => $params,
+    'as beforeAction' => [
+        'class' => 'backend\components\behaviors\Access',
+    ],
 ];
