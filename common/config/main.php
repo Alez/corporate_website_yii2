@@ -19,7 +19,7 @@ return [
                 ],
                 'facebook' => [
                     'class' => 'common\modules\user\models\clients\Facebook',
-                    'clientId' => '1505851379680857',
+                    'clientId' => '',
                     'clientSecret' => '',
                     'authUrl' => 'https://www.facebook.com/dialog/oauth?display=popup',
                     //'scope' => 'user_birthday,user_location',
