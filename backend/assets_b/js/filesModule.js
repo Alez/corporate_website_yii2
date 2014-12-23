@@ -22,20 +22,24 @@ filesModule = (function() {
         init: function() {
             self = this;
 
-            $('.fileDelete-js').on('click', function() {
-                var paramsArray = [].filter.call(this.attributes, function(el) {
-                        return /^data-/.test(el.name);
-                    }),
-                    params = {};
+            var fileDelete = document.querySelector('.fileDelete-js');
 
-                [].forEach.call(paramsArray, function(attr) {
-                    // Отрежем ненужный префикс 'data-'
-                    var name = attr.name.substr(5, attr.name.length); // 5 - 'data-'.length
-                    params[name] = attr.value;
+            if (fileDelete) {
+                fileDelete.addEventListener('click', function() {
+                    var paramsArray = [].filter.call(this.attributes, function(el) {
+                            return /^data-/.test(el.name);
+                        }),
+                        params = {};
+
+                    [].forEach.call(paramsArray, function(attr) {
+                        // Отрежем ненужный префикс 'data-'
+                        var name = attr.name.substr(5, attr.name.length); // 5 - 'data-'.length
+                        params[name] = attr.value;
+                    });
+
+                    self.deleteFile.call(this, params);
                 });
-
-                self.deleteFile.call(this, params);
-            });
+            }
         },
 
         /**
