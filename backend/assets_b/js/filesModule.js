@@ -1,5 +1,19 @@
 filesModule = (function() {
-    var self;
+    'use strict';
+    var self,
+
+    /**
+     * Удалит ноду-обёртку файла из ДОМа
+     *
+     * @param node Нода крестика, куда нажали что бы удалить файл
+     */
+    removeFileNode = function(node) {
+        var parentNode = node.parentNode;
+
+        $(parentNode).fadeOut(function () {
+            parentNode.parentNode.removeChild(parentNode);
+        });
+    };
 
     return {
         /**
@@ -9,59 +23,42 @@ filesModule = (function() {
             self = this;
 
             $('.fileDelete-js').on('click', function() {
-                var deleteUrl = this.getAttribute('data-delete-url'),
-                    id = this.getAttribute('data-delete-id'),
-                    fileId = this.getAttribute('data-delete-fileid'),
-                    fieldName = this.getAttribute('data-delete-field-name');
+                var paramsArray = [].filter.call(this.attributes, function(el) {
+                        return /^data-/.test(el.name);
+                    }),
+                    params = {};
 
-                self.deleteFile.call(this, deleteUrl, id, fileId, fieldName);
+                [].forEach.call(paramsArray, function(attr) {
+                    // Отрежем ненужный префикс 'data-'
+                    var name = attr.name.substr(5, attr.name.length); // 5 - 'data-'.length
+                    params[name] = attr.value;
+                });
+
+                self.deleteFile.call(this, params);
             });
         },
 
         /**
          * Пошлёт запрос на удаление файла у записи динамической страницы
          *
-         * @param url Адрес для запроса
-         * @param id Номер параметра страницы
-         * @param fileId Номер файла
-         * @param fieldName Название поля где хранится файл
+         * @param params Параметры удаляемого файла
          */
-        deleteFile: function(url, id, fileId, fieldName) {
-            var data = {};
-
-            data.id = id;
-            if (fileId) {
-                data.fileId = fileId;
-            }
-            if (fieldName) {
-                data.fieldName = fieldName;
-            }
+        deleteFile: function(params) {
+            var url = params.url;
+            delete params.url;
 
             $.ajax(url, {
                 context: this,
-                data: data,
+                data: params,
                 success: function (response) {
                     if (response) {
-                        self.removeFileNode(this);
+                        this.removeFileNode(this);
                     }
                 },
                 error: function () {
                     alert('Что-то пошло не так');
                 },
                 timeout: 3000
-            });
-        },
-
-        /**
-         * Удалит ноду-обёртку файла из ДОМа
-         *
-         * @param node Нода крестика, куда нажали что бы удалить файл
-         */
-        removeFileNode: function(node) {
-            var parentNode = node.parentNode;
-
-            $(parentNode).fadeOut(function () {
-                parentNode.parentNode.removeChild(parentNode);
             });
         }
     }

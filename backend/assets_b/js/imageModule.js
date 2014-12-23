@@ -52,40 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Вызывает удаление фотки
-    //$galleryList.on('click', 'i', function() {
-    //    var url = this.getAttribute('data-delete-url'),
-    //        parentNode = this.parentNode,
-    //        id = parentNode.getAttribute('data-id'),
-    //        elementId = parentNode.getAttribute('data-product-id'),
-    //        type = parentNode.getAttribute('data-type');
-    //
-    //    $.ajax(url, {
-    //        data: {
-    //            productId: elementId,
-    //            fileId: id,
-    //            type: type
-    //        },
-    //        success: function(response) {
-    //            if (response) {
-    //                $(parentNode).fadeOut(function() {
-    //                    parentNode.parentNode.removeChild(parentNode);
-    //                });
-    //            }
-    //        },
-    //        error: function() {
-    //            alert('Что-то пошло не так');
-    //        },
-    //        timeout: 3000,
-    //        beforeSend: function() {
-    //            /**/
-    //        },
-    //        complete: function() {
-    //            /**/
-    //        }
-    //    });
-    //});
-
     $(document.body).on('click', wideBtnSelector, function() {
         runCropper(16/9);
     });
