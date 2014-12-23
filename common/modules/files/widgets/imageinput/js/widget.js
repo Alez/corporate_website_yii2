@@ -1,4 +1,4 @@
-// Превью для товара
+// Превью для загружаемого изображения
 document.addEventListener('DOMContentLoaded', function() {
     [].forEach.call(document.querySelectorAll('.imageInput-js'), function(el) {
         el.addEventListener('change', function() {

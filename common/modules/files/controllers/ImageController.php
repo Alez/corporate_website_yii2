@@ -33,4 +33,21 @@ class ImageController extends Controller
             return $this->renderAjax('_photoEditPopup', ['image' => $image]);
         }
     }
+
+    public function actionDeletefile($id, $model, $fileid = null, $field = null)
+    {
+        Yii::$app->response->format = 'json';
+
+        if (!class_exists($model)) {
+            return false;
+        }
+
+        $material = $model::findOne($id);
+
+        if ($fileid) {
+            return $material->deleteFile($field, (int)$fileid);
+        } else {
+            return $material->deleteFile($field);
+        }
+    }
 }

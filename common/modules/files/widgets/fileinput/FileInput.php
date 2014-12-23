@@ -7,6 +7,11 @@ use Yii;
 use yii\widgets\InputWidget;
 use yii\helpers\Html;
 
+/**
+ * Виджет для загрузки файлов и показа загруженных ранее
+ *
+ * @package common\modules\files\widgets\fileinput
+ */
 class FileInput extends InputWidget
 {
     /* @var \common\modules\files\models\Files|\common\modules\files\models\Files[] Откуда брать изображения для превью */
