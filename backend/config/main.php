@@ -32,7 +32,7 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'main/default/error',
         ],
         'urlManager' => [
             'rules' => $routes,

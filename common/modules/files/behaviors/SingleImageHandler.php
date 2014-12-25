@@ -15,9 +15,9 @@ use Yii;
  *      {
  *          return [
  *              [
- *                  'class' => MultiImageHandler::className(),
+ *                  'class' => SingleImageHandler::className(),
  *                  'attributes' => [
- *                      'gallery_images_id' => 'gallery_images_file',
+ *                      'gallery_preview_id' => 'gallery_preview_file',
  *                  ]
  *              ],
  *          ];
@@ -28,7 +28,7 @@ use Yii;
  *
  * @package common\modules\files\behaviors
  */
-class MultiImageHandler extends AbstractImageHandler
+class SingleImageHandler extends AbstractImageHandler
 {
     /**
      * Сохранит поле со множественными картинками в БД.
@@ -38,41 +38,24 @@ class MultiImageHandler extends AbstractImageHandler
      */
     public function evaluateAttributes($event)
     {
-        foreach ($this->attributes as $fieldName) {
+        foreach ($this->attributes as $dbName => $fieldName) {
             if (!property_exists($event->sender, $fieldName)) {
                 throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
             }
-        }
 
-        foreach ($this->attributes as $dbName => $fieldName) {
-            $event->sender->$fieldName = UploadedFile::getInstances($event->sender, $fieldName);
-            if ($event->sender->$fieldName && $event->sender->{$fieldName}[0] !== '') {
-                $newFilesIdArray = [];
-                foreach ($event->sender->$fieldName as $file) {
-                    $newFilesIdArray[] = (new Files())->addImage($file, $event->sender->className(), null, null);
-                }
+            $event->sender->$fieldName = UploadedFile::getInstance($event->sender, $fieldName);
 
-                if ($event->sender->getAttribute($dbName)) {
-                    $filesIdArray = unserialize($event->sender->getAttribute($dbName));
-                } else {
-                    $filesIdArray = [];
+            if ($event->sender->$fieldName) {
+                if ($fileId = $event->sender->getOldAttribute($dbName)) {
+                    $oldFile = Files::findOne($fileId);
+                    if ($oldFile) {
+                        $oldFile->delete();
+                    }
                 }
-                $filesIdArray = ArrayHelper::merge($filesIdArray, $newFilesIdArray);
-                $event->sender->setAttribute($dbName, serialize($filesIdArray));
+                $newFileId = (new Files())->addFile($event->sender->$fieldName, $event->sender->className());
+                $event->sender->setAttribute($dbName, $newFileId);
             }
         }
-    }
-
-    /**
-     * Вернёт все файлы продукта в виде массива объектов
-     *
-     * @param string $fieldName Название поля откуда брать id файлов
-     *
-     * @return Files[]
-     */
-    public function getFiles($fieldName)
-    {
-        return Files::find()->where(['IN', 'id', unserialize($this->owner->getAttribute($fieldName))])->all();
     }
 
     /**
@@ -96,11 +79,9 @@ class MultiImageHandler extends AbstractImageHandler
     public function clearFiles($event)
     {
         foreach ($this->attributes as $fieldName) {
-            if ($filesId = unserialize($this->getAttribute($fieldName))) {
-                foreach ($filesId as $fileId) {
-                    if ($file = Files::findOne(['id' => $fileId])) {
-                        $file->delete();
-                    }
+            if ($fileId = $event->sender->getAttribute($fieldName)) {
+                if ($file = Files::findOne(['id' => $fileId])) {
+                    $file->delete();
                 }
             }
         }

@@ -38,16 +38,20 @@ class ImageController extends Controller
     {
         Yii::$app->response->format = 'json';
 
+        if (((Yii::$app->user->identity && (int)Yii::$app->user->identity->role !== 1) || is_null(Yii::$app->user->identity))) {
+            return false;
+        }
+
         if (!class_exists($model)) {
             return false;
         }
 
-        $material = $model::findOne($id);
+        $record = $model::findOne($id);
 
         if ($fileid) {
-            return $material->deleteFile($field, (int)$fileid);
+            return $record->deleteFile($field, (int)$fileid);
         } else {
-            return $material->deleteFile($field);
+            return $record->deleteFile($field);
         }
     }
 }

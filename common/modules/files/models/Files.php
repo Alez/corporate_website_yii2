@@ -162,8 +162,7 @@ class Files extends \yii\db\ActiveRecord
      */
     public function addFile($file, $modelClassName, $alt = null, $title = null)
     {
-        $shortModelClassName = strtolower(substr(strrchr($modelClassName, '\\'), 1));
-
+        $shortModelClassName = strtolower((new \ReflectionClass($modelClassName))->getShortName());
         $path = self::makeHashPath();
 
         if ($this->__addToFs($file, $shortModelClassName, $path)) {
@@ -322,7 +321,7 @@ class Files extends \yii\db\ActiveRecord
             mkdir($thumbDir, 0775, true);
         }
 
-        self::resize($this->getFsPath(), $width. $height, 80, $mode);
+        self::resize($this->getFsPath(), $width, $height, 80, $mode, $thumbFile);
 
         return true;
     }
@@ -412,14 +411,17 @@ class Files extends \yii\db\ActiveRecord
      * @param $height
      * @param $quality
      */
-    public static function resize($filePath, $width, $height, $quality = 100, $mode = self::EXACT)
+    public static function resize($filePath, $width, $height, $quality = 100, $mode = self::EXACT, $outputPath = null)
     {
+        if (is_null($outputPath)) {
+            $outputPath = $filePath;
+        }
         // Без белых полос
         (new Imagine())
             ->getImagine()
             ->open($filePath)
             ->thumbnail(new Box($width, $height), $mode)
-            ->save($filePath, ['quality' => $quality]);
+            ->save($outputPath, ['quality' => $quality]);
 
         // С полосами
         //Imagine::thumbnail($this->getFsPath(), $width, $height, $mode)
