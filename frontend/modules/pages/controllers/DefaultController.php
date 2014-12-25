@@ -42,10 +42,14 @@ class DefaultController extends Controller
         foreach (PagesParams::$pagesParams as $pageParam) {
             $params = ArrayHelper::merge($params, $pageParam);
         }
-        $files = Files::find()
-            ->where(['id' => PagesParams::extractAllFilesId($params)])
-            ->indexBy('id')
-            ->all();
+        $files = [];
+        $filesId = PagesParams::extractAllFilesId($params);
+        if (!empty($filesId)) {
+            $files = Files::find()
+                ->where(['id' => $filesId])
+                ->indexBy('id')
+                ->all();
+        }
 
         return $this->render(Pages::$page['pagesTemplate']['slug'], [
                 'files'  => $files,
