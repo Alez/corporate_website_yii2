@@ -1,6 +1,6 @@
 <?php
 
-namespace common\modules\contact_form\models;
+namespace frontend\modules\contact_form\models;
 
 use Yii;
 use yii\base\Exception;
