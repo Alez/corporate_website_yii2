@@ -35,15 +35,14 @@ class SingleImageHandler extends AbstractImageHandler
      * Создаст запись в табличе Files, заберёт оттуда новый ID и поместит в поле таблицы указаное в attributes
      *
      * @param $event
+     * @throws \Exception
      */
-    public function evaluateAttributes($event)
+    public function beforeSave($event)
     {
         foreach ($this->attributes as $dbName => $fieldName) {
             if (!property_exists($event->sender, $fieldName)) {
                 throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
             }
-
-            $event->sender->$fieldName = UploadedFile::getInstance($event->sender, $fieldName);
 
             if ($event->sender->$fieldName) {
                 if ($fileId = $event->sender->getOldAttribute($dbName)) {
@@ -55,6 +54,23 @@ class SingleImageHandler extends AbstractImageHandler
                 $newFileId = (new Files())->addFile($event->sender->$fieldName, $event->sender->className());
                 $event->sender->setAttribute($dbName, $newFileId);
             }
+        }
+    }
+
+    /**
+     * Добавит файл в общую валидацию
+     *
+     * @param $event
+     * @throws \Exception
+     */
+    public function beforeValidate($event)
+    {
+        foreach ($this->attributes as $dbName => $fieldName) {
+            if (!property_exists($event->sender, $fieldName)) {
+                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+            }
+
+            $event->sender->$fieldName = UploadedFile::getInstance($event->sender, $fieldName);
         }
     }
 
@@ -76,7 +92,7 @@ class SingleImageHandler extends AbstractImageHandler
      * @param $event
      * @throws \Exception
      */
-    public function clearFiles($event)
+    public function beforeDelete($event)
     {
         foreach ($this->attributes as $fieldName) {
             if ($fileId = $event->sender->getAttribute($fieldName)) {

@@ -36,7 +36,7 @@ class MultiImageHandler extends AbstractImageHandler
      *
      * @param $event
      */
-    public function evaluateAttributes($event)
+    public function beforeSave($event)
     {
         foreach ($this->attributes as $fieldName) {
             if (!property_exists($event->sender, $fieldName)) {
@@ -45,7 +45,6 @@ class MultiImageHandler extends AbstractImageHandler
         }
 
         foreach ($this->attributes as $dbName => $fieldName) {
-            $event->sender->$fieldName = UploadedFile::getInstances($event->sender, $fieldName);
             if ($event->sender->$fieldName && $event->sender->{$fieldName}[0] !== '') {
                 $newFilesIdArray = [];
                 foreach ($event->sender->$fieldName as $file) {
@@ -60,6 +59,28 @@ class MultiImageHandler extends AbstractImageHandler
                 $filesIdArray = ArrayHelper::merge($filesIdArray, $newFilesIdArray);
                 $event->sender->setAttribute($dbName, serialize($filesIdArray));
             }
+        }
+    }
+
+    /**
+     * Добавит файл в общую валидацию
+     *
+     * @param $event
+     * @throws \Exception
+     */
+    /**
+     * Добавит файл в общую валидацию
+     *
+     * @param $event
+     * @throws \Exception
+     */
+    public function beforeValidate($event)
+    {
+        foreach ($this->attributes as $dbName => $fieldName) {
+            if (!property_exists($event->sender, $fieldName)) {
+                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+            }
+            $event->sender->$fieldName = UploadedFile::getInstances($event->sender, $fieldName);
         }
     }
 
@@ -93,7 +114,7 @@ class MultiImageHandler extends AbstractImageHandler
      * @param $event
      * @throws \Exception
      */
-    public function clearFiles($event)
+    public function beforeDelete($event)
     {
         foreach ($this->attributes as $fieldName) {
             if ($filesId = unserialize($this->getAttribute($fieldName))) {

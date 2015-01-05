@@ -23,7 +23,11 @@ class ImageInput extends InputWidget
     public function init()
     {
         if (!isset($this->imageSource) && $this->hasModel()) {
-            $this->imageSource = Files::findOne($this->model->{$this->fieldName});
+            if (isset($this->options['multiple'])) {
+                $this->imageSource = $this->model->getFiles($this->fieldName);
+            } else {
+                $this->imageSource = Files::findOne($this->model->{$this->fieldName});
+            }
         }
 
         if (isset($this->options['class'])) {
