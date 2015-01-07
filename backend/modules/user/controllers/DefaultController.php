@@ -42,18 +42,15 @@ class DefaultController extends Controller
     {
         $this->layout = '@backend/views/layouts/guest.php';
 
-//        if (!Yii::$app->user->isGuest) {
-//            return $this->goHome();
-//        }
-
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+            if ((int)Yii::$app->user->identity->role === 1) {
+                return $this->goBack();
+            }
         }
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
     public function actionLogout()

@@ -18,10 +18,13 @@ class Access extends Behavior
 
     public function beforeAccess($event)
     {
-        if (((Yii::$app->user->identity && (int)Yii::$app->user->identity->role !== 1)
-            || is_null(Yii::$app->user->identity)) && $event->action->id !== 'login'
-        ) {
-            Yii::$app->getResponse()->redirect('@web/login');
+        if ($event->action->id !== 'login') {
+            if (Yii::$app->user->isGuest) {
+                Yii::$app->getResponse()->redirect('@web/login');
+            }
+            if ((int)Yii::$app->user->identity->role !== 1) {
+                Yii::$app->getResponse()->redirect('@web/login');
+            }
         }
 
 //        $accessControl = new AccessControl();
