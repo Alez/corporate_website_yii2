@@ -1,45 +1,45 @@
 <?php
 
-use common\modules\contact_form\models\ContactForm;
+use frontend\modules\contact_form\models\ContactForm;
 use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this \yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $model ContactForm*/
+/* @var $buttonText string|null Текст на кнопке*/
 ?>
-<? if (!(Yii::$app->request->isAjax || Yii::$app->request->isPost)): ?>
-<div id="modal_1" class="reveal-modal tiny" data-reveal>
-    <div class="modal_box">
-        <a class="close-reveal-modal">&times;</a>
-        <div class="modal_title">Заказать звонок</div>
-<? endif ?>
-<div class="modal_1-js">
-    <?= Html::beginForm(Url::to('/contact_form/default/contact'), 'POST');
-    if (!isset($model)) {
-        $model = new ContactForm();
-    } ?>
-    <?= Html::activeTextInput($model, 'name', [
-            'placeholder' => 'Ваше имя',
-        ]) ?>
-    <?= Html::error($model, 'name') ?>
+<? if (!isset($model)) {
+    $model = new ContactForm();
+} ?>
+<? $form = ActiveForm::begin([
+    'action' => '/contact_form/default/contact',
+    'method' => 'POST',
+    'options' => [
+        'class' => 'callback-js callbackForm',
+    ],
+]) ?>
 
-    <?= Html::activeTextInput($model, 'phone', [
-            'class' => 'phone_input',
-            'placeholder' => 'Ваш номер телефона',
-        ]) ?>
-    <?= Html::error($model, 'phone') ?>
+<?
+$field = $form->field($model, 'name')->textInput(['placeholder' => 'Ваше имя']);
+$field->template ="{input}\n{hint}\n{error}";
+echo $field;
+?>
 
-    <?= Html::activeHiddenInput($model, 'url') ?>
-    <?= Html::activeHiddenInput($model, 'article') ?>
+<?
+$field = $form->field($model, 'phone')->textInput(['placeholder' => 'Ваш номер телефона']);
+$field->template ="{input}\n{hint}\n{error}";
+echo $field;
+?>
 
-    <?= Html::button('Отправить заявку', [
-            'type' => 'submit',
-            'class' => 'btn_style',
-        ])?>
-    <?= Html::endForm() ?>
-</div>
-<? if (!(Yii::$app->request->isAjax || Yii::$app->request->isPost)): ?>
-    </div>
-</div>
-<? endif ?>
+<?= Html::activeHiddenInput($model, 'url') ?>
+
+<?= Html::button(isset($buttonText) ? $buttonText : 'Заказать звонок', [
+    'type' => 'submit',
+])?>
+
+<?= Html::img('/images/loader.gif', [
+    'class' => 'loader-js loader',
+    'style' => 'display: none'
+]) ?>
+<? ActiveForm::end() ?>
