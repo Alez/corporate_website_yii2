@@ -18,10 +18,13 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web/assets_b';
     public $css = [
+        'js/bootstrap-datepicker/css/datepicker3.css',
         'js/cropper/cropper.css',
         'css/site.css',
     ];
     public $js = [
+        'js/bootstrap-datepicker/js/bootstrap-datepicker.js',
+        'js/bootstrap-datepicker/js/locales/bootstrap-datepicker.ru.js',
         'js/cropper/cropper.js',
         'js/adminModule.js',
         'js/imageModule.js',

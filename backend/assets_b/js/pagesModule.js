@@ -7,6 +7,9 @@ pagesModule = (function() {
          */
         init: function() {
             self = this;
+
+            // Инициализация механизма перезагрузка шаблонов страниц
+            pagesModule.templateReload('.chooseTemplate-js', '#templateFields');
         },
 
         /**
@@ -17,7 +20,10 @@ pagesModule = (function() {
          */
         templateReload: function(switcherSelector, containerSelector) {
             $(document.body).on('change', switcherSelector, function () {
-                $.pjax({ url: this.getAttribute('data-url') + this.value, container: containerSelector });
+                $.pjax({
+                    url: this.getAttribute('data-url') + this.value,
+                    container: containerSelector
+                });
             })
         }
     }
