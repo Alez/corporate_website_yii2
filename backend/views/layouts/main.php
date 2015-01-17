@@ -88,27 +88,43 @@ AppAsset::register($this);
                     </a>
                 </li>
                 <li>
-                    <a href="<?= Url::to('@web/service_info/default/index') ?>">
-                        <i class="fa fa-list"></i>
-                        <span>Служебная информация</span>
+                    <a href="<?= Url::to('@web/settings/default/index') ?>">
+                        <i class="fa fa-cog"></i>
+                        <span>Настройки</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= Url::to('@web/contacts/default/index') ?>">
+                        <i class="fa fa-envelope"></i>
+                        <span>Контактная информация</span>
                     </a>
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-shopping-cart"></i>
-                        <span>Каталог</span>
+                        <i class="fa fa-table"></i>
+                        <span>Записи</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="<?= Url::toRoute(['/catalog/material/index']) ?>"><i class="fa fa-angle-double-right"></i> Материалы</a></li>
-                        <li><a href="<?= Url::toRoute(['/catalog/category/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории</a></li>
-                        <li><a href="<?= Url::toRoute(['/catalog/author/index']) ?>"><i class="fa fa-angle-double-right"></i> Авторы</a></li>
-                        <li><a href="<?= Url::toRoute(['/catalog/age/index']) ?>"><i class="fa fa-angle-double-right"></i> Возраста</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/certificates/index']) ?>"><i class="fa fa-angle-double-right"></i> Сертификаты</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/doctor/index']) ?>"><i class="fa fa-angle-double-right"></i> Врачи</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/doctordepartment/index']) ?>"><i class="fa fa-angle-double-right"></i> Врачебные Отделения</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/gallery/index']) ?>"><i class="fa fa-angle-double-right"></i> Галлерея</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/mediaaboutus/index']) ?>"><i class="fa fa-angle-double-right"></i> Сми о нас</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/news/index']) ?>"><i class="fa fa-angle-double-right"></i> Новости</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/price/index']) ?>"><i class="fa fa-angle-double-right"></i> Цены</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/pricecategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Цен</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/promo/index']) ?>"><i class="fa fa-angle-double-right"></i> Акции</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/reviews/index']) ?>"><i class="fa fa-angle-double-right"></i> Отзывы</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/service/index']) ?>"><i class="fa fa-angle-double-right"></i> Услуги</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/servicecategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Услуг</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/video/index']) ?>"><i class="fa fa-angle-double-right"></i> Видео</a></li>
+                        <li><a href="<?= Url::toRoute(['/entities/videocategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Видео</a></li>
                     </ul>
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-bar-chart-o"></i>
+                        <i class="fa fa-files-o"></i>
                         <span>Страницы</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>

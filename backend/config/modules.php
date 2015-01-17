@@ -9,16 +9,19 @@ return [
     'files' => [
         'class' => 'common\modules\files\Module',
     ],
-    'service_info' => [
-        'class' => 'backend\modules\service_info\Module',
+    'contacts' => [
+        'class' => 'backend\modules\contacts\Module',
+    ],
+    'settings' => [
+        'class' => 'backend\modules\settings\Module',
     ],
     'pages' => [
         'class' => 'backend\modules\pages\Module',
     ],
-    'news' => [
-        'class' => 'backend\modules\news\Module',
-    ],
     'catalog' => [
         'class' => 'backend\modules\catalog\Module',
+    ],    
+	'entities' => [
+        'class' => 'backend\modules\entities\Module',
     ],
 ];
