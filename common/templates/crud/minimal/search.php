@@ -75,6 +75,17 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
 
         <?= implode("\n        ", $searchConditions) ?>
 
+        // Специальный фильтр для даты
+        //if ($this->getAttribute('created_at') !== '') {
+        //    $createDateStart = \DateTime::createFromFormat('d-m-y', $this->created_at);
+        //    if ($createDateStart) {
+        //        $createDateStart->modify('Today');
+        //        $createDateEnd = clone $createDateStart;
+        //        $createDateEnd->modify('+1 day');
+        //        $query->andWhere(['between', 'created_at', $createDateStart->getTimestamp(), $createDateEnd->getTimestamp()]);
+        //    }
+        //}
+
         return $dataProvider;
     }
 }

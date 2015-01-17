@@ -18,6 +18,11 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\modules\files\widgets\imageinput\ImageInput;
+use backend\components\widgets\transliterateInput\TransliterateInput;
+use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
@@ -26,7 +31,12 @@ use yii\widgets\ActiveForm;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin(); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin([
+        'method' => 'post',
+        'options' => [
+            'enctype' => 'multipart/form-data',
+        ],
+    ]); ?>
 
 <?php foreach ($generator->getColumnNames() as $attribute) {
     if (in_array($attribute, $safeAttributes)) {
@@ -41,3 +51,5 @@ use yii\widgets\ActiveForm;
     <?= "<?php " ?>ActiveForm::end(); ?>
 
 </div>
+<?= "<? " ?>Modal::begin(['id' => 'editPhotoPopup']) ?>
+<?= "<? " ?>Modal::end() ?>

@@ -14,6 +14,7 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 <?= !empty($generator->searchModelClass) ? "/* @var \$searchModel " . ltrim($generator->searchModelClass, '\\') . " */\n" : '' ?>
@@ -30,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Добавить {modelClass}', ['modelClass' => Inflector::camel2words(StringHelper::basename($generator->modelClass))]) ?>, ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    <?= "<? " ?>Pjax::begin() ?>
 <?php if ($generator->indexWidgetType === 'grid'): ?>
     <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
@@ -39,6 +40,16 @@ $this->params['breadcrumbs'][] = $this->title;
 $count = 0;
 if (($tableSchema = $generator->getTableSchema()) === false) {
     foreach ($generator->getColumnNames() as $name) {
+        if (in_array($name, ['created_at', 'updated_at'])) {
+            echo '            [
+                \'format\'             => [\'date\', \'php:d-m-Y H:i\'],
+                \'attribute\'          => \'' . $name . '\',
+                \'filterInputOptions\' => [
+                    \'class\' => \'datepicker-js form-control\',
+                ],
+            ],' . "\n";
+            continue;
+        }
         if (++$count < 6) {
             echo "            '" . $name . "',\n";
         } else {
@@ -48,6 +59,16 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 } else {
     foreach ($tableSchema->columns as $column) {
         $format = $generator->generateColumnFormat($column);
+        if (in_array($column->name, ['created_at', 'updated_at'])) {
+            echo '            [
+                \'format\'             => [\'date\', \'php:d-m-Y H:i\'],
+                \'attribute\'          => \'' . $column->name . '\',
+                \'filterInputOptions\' => [
+                    \'class\' => \'datepicker-js form-control\',
+                ],
+            ],' . "\n";
+            continue;
+        }
         if (++$count < 6) {
             echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
         } else {
@@ -71,5 +92,6 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
         },
     ]) ?>
 <?php endif; ?>
+    <?= "<? " ?>Pjax::end() ?>
 
 </div>
