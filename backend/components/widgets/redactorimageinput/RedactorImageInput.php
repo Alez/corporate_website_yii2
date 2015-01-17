@@ -1,6 +1,6 @@
 <?php
 
-namespace common\modules\catalog\widgets\redactorimageinput;
+namespace backend\components\widgets\redactorimageinput;
 
 use Yii;
 use common\modules\files\widgets\imageinput\ImageInput;
@@ -18,6 +18,10 @@ class RedactorImageInput extends ImageInput
 
     public function run()
     {
+        if (!$this->imageSource) {
+            $this->imageSource = $this->model->getFiles('post_images_id');
+        }
+
         if ($this->hasModel() && isset($this->imageSource[0])) {
             echo $this->render('_preview', [
                     'widget' => $this,

@@ -1,6 +1,6 @@
 <?php
 
-namespace common\modules\catalog\widgets\redactorimageinput;
+namespace backend\components\widgets\redactorimageinput;
 
 class RedactorImageInputAsset extends \yii\web\AssetBundle
 {
@@ -10,5 +10,5 @@ class RedactorImageInputAsset extends \yii\web\AssetBundle
     public $js = [
         'js/widget.js',
     ];
-    public $sourcePath = '@common/modules/catalog/widgets/redactorimageinput';
+    public $sourcePath = '@backend/components/widgets/redactorimageinput';
 }
