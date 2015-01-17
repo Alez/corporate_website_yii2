@@ -15,6 +15,7 @@ use common\modules\pages\models\MultifileParams;
 use common\modules\pages\models\ImageParams;
 use common\modules\pages\models\MultiimageParams;
 use common\modules\files\widgets\imageinput\ImageInput;
+use common\modules\pages\models\TextareaParams;
 
 
 /* @var $this yii\web\View */
@@ -39,7 +40,7 @@ use common\modules\files\widgets\imageinput\ImageInput;
                 switch ($param->type) {
                     // Текстовое поле
                     case TextParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]value")
                             ->label($param->pagesTemplatesParams->getAttribute('name'), [
@@ -49,9 +50,21 @@ use common\modules\files\widgets\imageinput\ImageInput;
                                     'id' => 'input' . $i,
                                 ]);
                         break;
+                    case TextareaParams::TYPE:
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
+                        echo $form
+                            ->field($param, "[$name]value")
+                            ->label($param->pagesTemplatesParams->getAttribute('name'), [
+                                'for' => 'input' . $i,
+                            ])
+                            ->textarea([
+                                'id' => 'input' . $i,
+                                'rows' => '6',
+                            ]);
+                        break;
                     // WYSIWYG
                     case RedactorParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]value")
                             ->label($param->pagesTemplatesParams->getAttribute('name'), [
@@ -92,7 +105,7 @@ use common\modules\files\widgets\imageinput\ImageInput;
                         break;
                     // Одиночный файл
                     case FileParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
                             ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [
@@ -102,12 +115,12 @@ use common\modules\files\widgets\imageinput\ImageInput;
                         break;
                     // Мультизагрузка файлов
                     case MultifileParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo 'Поля нет';
                         break;
                     // Одиночная картинка
                     case ImageParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
                             ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [
@@ -120,7 +133,7 @@ use common\modules\files\widgets\imageinput\ImageInput;
                         break;
                     // Мультизагрузка картинок
                     case MultiimageParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pagesTemplatesParams->getAttribute('id');
+                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
                             ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [

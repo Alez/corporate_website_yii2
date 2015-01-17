@@ -1,6 +1,6 @@
 <?php
 
-use common\modules\service_info\models\ServiceInfo;
+use common\modules\contacts\models\Contacts;
 use common\modules\pages\models\PagesParams;
 use common\modules\pages\models\Pages;
 use frontend\assets\GoogleMapAsset;
@@ -10,7 +10,7 @@ GoogleMapAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $files common\modules\files\models\files[] */
 
-//$this->params['menuRoute'] = '';
+$this->params['menu'] = Pages::get('slug');
 $this->title = Pages::get('name');
 ?>
 <div class="wrap_fixed b-advantage our_contacts">
@@ -22,10 +22,10 @@ $this->title = Pages::get('name');
         </div>
         <div class="small-6 columns">
             <div class="b-advantage__info">
-                <div class="item"><span class="color1">Телефон:</span><?= ServiceInfo::get('cityCode') ?> <?= ServiceInfo::get('phone') ?></div>
-                <div class="item"><span class="color1">Адрес:</span><?= ServiceInfo::get('address') ?></div>
-                <div class="item"><span class="color1">E-mail:</span><?= ServiceInfo::get('email') ?></div>
-                <div class="item"><span class="color1">Режим работы:</span>с <?= ServiceInfo::get('workingHours') ?></div>
+                <div class="item"><span class="color1">Телефон:</span><?= Contacts::get('cityCode') ?> <?= Contacts::get('phone') ?></div>
+                <div class="item"><span class="color1">Адрес:</span><?= Contacts::get('address') ?></div>
+                <div class="item"><span class="color1">E-mail:</span><?= Contacts::get('email') ?></div>
+                <div class="item"><span class="color1">Режим работы:</span>с <?= Contacts::get('workingHours') ?></div>
             </div>
         </div>
     </div>

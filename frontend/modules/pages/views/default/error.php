@@ -8,9 +8,10 @@ use yii\helpers\Html;
 /* @var $exception Exception */
 
 $this->title = $name;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="wrap_fixed">
+<div class="container">
     <div class="row">
         <div class="small-12 columns">
             <h2><?= $name ?></h2>

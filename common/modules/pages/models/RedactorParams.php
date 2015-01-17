@@ -10,7 +10,6 @@ use Yii;
  * @property string $id
  * @property string $page_id
  * @property string $value
- * @property string $type
  *
  * @property PagesTemplatesParams $pagesTemplatesParams
  * @property Pages $page
@@ -18,12 +17,6 @@ use Yii;
 class RedactorParams extends PagesParams implements PagesParamsInterface
 {
     const TYPE = 'redactor';
-
-    public function init()
-    {
-        $this->setAttribute('type', self::TYPE);
-        parent::init();
-    }
 
     /**
      * Проверить является ли тип загрузкой файла

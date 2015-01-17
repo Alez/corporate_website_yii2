@@ -17,7 +17,7 @@ class PagesTemplates extends \yii\db\ActiveRecord
 {
     const TEMPLATES_PATH = '/../templates/';
     const EMPTY_TEMPLATE_SLUG = 'empty';
-    const EMPTY_TEMPLATE_ID = '1';
+    const EMPTY_TEMPLATE_ID = 1;
 
     /**
      * @inheritdoc

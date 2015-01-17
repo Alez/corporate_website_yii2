@@ -149,18 +149,15 @@ class DefaultController extends \yii\web\Controller
                 $page->setAttribute('pages_template_id', Yii::$app->request->getQueryParam('template'));
             }
 
-            if (Yii::$app->request->isAjax) {
-                return $this->renderAjax('edit', [
-                        'page' => $page,
+            return Yii::$app->request->isAjax ?
+                $this->renderAjax('edit', [
+                        'page'   => $page,
                         'params' => PagesParams::newPageParams($template),
                     ]
-                );
-            } else {
-                return $this->render('edit', [
-                        'page' => $page,
-                        'params' => PagesParams::newPageParams($template),
-                    ]);
-            }
+                ) : $this->render('edit', [
+                    'page'   => $page,
+                    'params' => PagesParams::newPageParams($template),
+                ]);
         }
     }
 

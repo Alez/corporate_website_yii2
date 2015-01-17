@@ -3,10 +3,6 @@
 namespace common\modules\pages\models;
 
 use Yii;
-use common\modules\pages\models\PagesTemplates;
-use common\modules\files\models\Files;
-use common\components\helpers\SerializeHelper;
-use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -15,7 +11,6 @@ use yii\web\NotFoundHttpException;
  * @property string $id
  * @property string $page_id
  * @property string $value
- * @property string $type
  *
  * @property PagesTemplatesParams $pagesTemplatesParams
  * @property Pages $page
@@ -27,6 +22,12 @@ class PagesParams extends \yii\db\ActiveRecord
 
     /* @var PagesParams[] Параметры страниц используемые в этом шаблоне */
     public static $pagesParams;
+
+    /* @var PagesTemplatesParams[] Кэш всех возможных параметров для определения типа при создании экземпляра */
+    public static $pagesParamsTemplateCache;
+
+    public $slug;
+    public $type;
 
     /**
      * @inheritdoc
@@ -42,9 +43,8 @@ class PagesParams extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['page_id', 'type'], 'required'],
+            [['page_id'], 'required'],
             [['page_id'], 'integer'],
-            [['type'], 'string'],
             [['value'], 'trim'],
         ];
     }
@@ -58,34 +58,50 @@ class PagesParams extends \yii\db\ActiveRecord
             'id'      => 'ID',
             'page_id' => 'Page ID',
             'value'   => 'Value',
-            'type'    => 'Type',
         ];
     }
 
     /**
      * @param array $row
      *
-     * @return FileParams|ImageParams|MultifileParams|MultiimageParams|RedactorParams|TextParams|static
+     * @return PagesParamsInterface
      * @throws NotFoundHttpException
      */
     public static function instantiate($row)
     {
-        switch ($row['type']) {
+        if (is_null(self::$pagesParamsTemplateCache)) {
+            self::$pagesParamsTemplateCache = PagesTemplatesParams::find()->indexBy('id')->asArray()->all();
+        }
+
+        switch (self::$pagesParamsTemplateCache[$row['pages_templates_params_id']]['type']) {
             case TextParams::TYPE:
-                return new TextParams();
+                $param = new TextParams();
+                break;
             case RedactorParams::TYPE:
-                return new RedactorParams();
+                $param =  new RedactorParams();
+                break;
             case FileParams::TYPE:
-                return new FileParams();
+                $param =  new FileParams();
+                break;
             case MultifileParams::TYPE:
-                return new MultifileParams();
+                $param =  new MultifileParams();
+                break;
             case ImageParams::TYPE:
-                return new ImageParams();
+                $param =  new ImageParams();
+                break;
             case MultiimageParams::TYPE:
-                return new MultiimageParams();
+                $param =  new MultiimageParams();
+                break;
+            case TextareaParams::TYPE:
+                $param =  new TextareaParams();
+                break;
             default:
                 throw new NotFoundHttpException('Тип параметра не найден');
         }
+        $param->slug = self::$pagesParamsTemplateCache[$row['pages_templates_params_id']]['slug'];
+        $param->type = self::$pagesParamsTemplateCache[$row['pages_templates_params_id']]['type'];
+
+        return $param;
     }
 
     /**
@@ -114,7 +130,7 @@ class PagesParams extends \yii\db\ActiveRecord
      */
     public static function newPageParams($template)
     {
-        $template = $template ? (int)$template : (int)PagesTemplates::EMPTY_TEMPLATE_ID;
+        $template = $template ? (int)$template : PagesTemplates::EMPTY_TEMPLATE_ID;
         $pagesTemplatesParams = PagesTemplatesParams::find()->where(['pages_templates_id' => $template])->all();
         $newParams = [];
 
@@ -127,9 +143,9 @@ class PagesParams extends \yii\db\ActiveRecord
                 throw new NotFoundHttpException('Тип параметра не найден');
             }
             $newParam->setAttribute('pages_templates_params_id', $pagesTemplatesParam->getAttribute('id'));
-            $newParam->setAttribute('slug', $pagesTemplatesParam->getAttribute('slug'));
-            $newParam->setAttribute('type', $pagesTemplatesParam->getAttribute('type'));
             $newParam->setAttribute('id', '');
+            $newParam->slug = $pagesTemplatesParam->slug;
+            $newParam->type = $pagesTemplatesParam->type;
             $newParams[] = $newParam;
         }
 

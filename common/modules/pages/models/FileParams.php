@@ -14,7 +14,6 @@ use yii\helpers\ArrayHelper;
  * @property string $id
  * @property string $page_id
  * @property string $value
- * @property string $type
  *
  * @property PagesTemplatesParams $pagesTemplatesParams
  * @property Pages $page
@@ -25,12 +24,6 @@ class FileParams extends PagesParams implements PagesParamsInterface
 
     /* @var \yii\web\UploadedFile */
     public $uploadFile;
-
-    public function init()
-    {
-        $this->setAttribute('type', self::TYPE);
-        parent::init();
-    }
 
     public function rules()
     {

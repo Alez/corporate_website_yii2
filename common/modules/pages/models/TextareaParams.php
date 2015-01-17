@@ -14,14 +14,14 @@ use Yii;
  * @property PagesTemplatesParams $pagesTemplatesParams
  * @property Pages $page
  */
-class TextParams extends PagesParams implements PagesParamsInterface
+class TextareaParams extends PagesParams implements PagesParamsInterface
 {
-    const TYPE = 'text';
+    const TYPE = 'textarea';
 
     public function rules()
     {
         return array_merge(parent::rules(), [
-                [['value'], 'string', 'max' => 255],
+                [['value'], 'string'],
             ]);
     }
 
