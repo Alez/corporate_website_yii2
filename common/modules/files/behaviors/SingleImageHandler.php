@@ -39,20 +39,20 @@ class SingleImageHandler extends AbstractImageHandler
      */
     public function beforeSave($event)
     {
-        foreach ($this->attributes as $dbName => $fieldName) {
-            if (!property_exists($event->sender, $fieldName)) {
-                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+        foreach ($this->attributes as $fieldName => $propertyName) {
+            if (!property_exists($event->sender, $propertyName)) {
+                throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
 
-            if ($event->sender->$fieldName) {
-                if ($fileId = $event->sender->getOldAttribute($dbName)) {
+            if ($event->sender->$propertyName) {
+                if ($fileId = $event->sender->getOldAttribute($fieldName)) {
                     $oldFile = Files::findOne($fileId);
                     if ($oldFile) {
                         $oldFile->delete();
                     }
                 }
-                $newFileId = (new Files())->addFile($event->sender->$fieldName, $event->sender->className());
-                $event->sender->setAttribute($dbName, $newFileId);
+                $newFileId = (new Files())->addFile($event->sender->$propertyName, $event->sender->className());
+                $event->sender->setAttribute($fieldName, $newFileId);
             }
         }
     }
@@ -65,25 +65,25 @@ class SingleImageHandler extends AbstractImageHandler
      */
     public function beforeValidate($event)
     {
-        foreach ($this->attributes as $dbName => $fieldName) {
-            if (!property_exists($event->sender, $fieldName)) {
-                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+        foreach ($this->attributes as $fieldName => $propertyName) {
+            if (!property_exists($event->sender, $propertyName)) {
+                throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
 
-            $event->sender->$fieldName = UploadedFile::getInstance($event->sender, $fieldName);
+            $event->sender->$propertyName = UploadedFile::getInstance($event->sender, $propertyName);
         }
     }
 
     /**
      * Вернёт все id файлов продукта в виде массива
      *
-     * @param string $fieldName Название поля откуда брать id файлов
+     * @param string $propertyName Название поля откуда брать id файлов
      *
      * @return array
      */
-    public function getFilesId($fieldName)
+    public function getFilesId($propertyName)
     {
-        return ArrayHelper::getColumn($this->owner->getFiles($fieldName), 'id');
+        return ArrayHelper::getColumn($this->owner->getFiles($propertyName), 'id');
     }
 
     /**
@@ -94,7 +94,7 @@ class SingleImageHandler extends AbstractImageHandler
      */
     public function beforeDelete($event)
     {
-        foreach ($this->attributes as $fieldName) {
+        foreach (array_keys($this->attributes) as $fieldName) {
             if ($fileId = $event->sender->getAttribute($fieldName)) {
                 if ($file = Files::findOne(['id' => $fileId])) {
                     $file->delete();

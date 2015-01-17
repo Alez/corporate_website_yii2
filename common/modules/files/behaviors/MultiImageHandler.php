@@ -38,36 +38,30 @@ class MultiImageHandler extends AbstractImageHandler
      */
     public function beforeSave($event)
     {
-        foreach ($this->attributes as $fieldName) {
-            if (!property_exists($event->sender, $fieldName)) {
-                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+        foreach ($this->attributes as $propertyName) {
+            if (!property_exists($event->sender, $propertyName)) {
+                throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
         }
 
-        foreach ($this->attributes as $dbName => $fieldName) {
-            if ($event->sender->$fieldName && $event->sender->{$fieldName}[0] !== '') {
+        foreach ($this->attributes as $fieldName => $propertyName) {
+            if ($event->sender->$propertyName && $event->sender->{$propertyName}[0] !== '') {
                 $newFilesIdArray = [];
-                foreach ($event->sender->$fieldName as $file) {
+                foreach ($event->sender->$propertyName as $file) {
                     $newFilesIdArray[] = (new Files())->addImage($file, $event->sender->className(), null, null);
                 }
 
-                if ($event->sender->getAttribute($dbName)) {
-                    $filesIdArray = unserialize($event->sender->getAttribute($dbName));
+                if ($event->sender->getAttribute($fieldName)) {
+                    $filesIdArray = unserialize($event->sender->getAttribute($fieldName));
                 } else {
                     $filesIdArray = [];
                 }
                 $filesIdArray = ArrayHelper::merge($filesIdArray, $newFilesIdArray);
-                $event->sender->setAttribute($dbName, serialize($filesIdArray));
+                $event->sender->setAttribute($fieldName, serialize($filesIdArray));
             }
         }
     }
 
-    /**
-     * Добавит файл в общую валидацию
-     *
-     * @param $event
-     * @throws \Exception
-     */
     /**
      * Добавит файл в общую валидацию
      *
@@ -76,36 +70,57 @@ class MultiImageHandler extends AbstractImageHandler
      */
     public function beforeValidate($event)
     {
-        foreach ($this->attributes as $dbName => $fieldName) {
-            if (!property_exists($event->sender, $fieldName)) {
-                throw new \Exception('В модели"' . $event->sender->className() . '" необходимо создать поле с именем "' . $fieldName . '"');
+        foreach ($this->attributes as $fieldName => $propertyName) {
+            if (!property_exists($event->sender, $propertyName)) {
+                throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
-            $event->sender->$fieldName = UploadedFile::getInstances($event->sender, $fieldName);
+            $event->sender->$propertyName = UploadedFile::getInstances($event->sender, $propertyName);
         }
     }
 
     /**
      * Вернёт все файлы продукта в виде массива объектов
      *
-     * @param string $fieldName Название поля откуда брать id файлов
+     * @param string $propertyName Название свойства где лежат id файлов
      *
-     * @return Files[]
+     * @return Files[]|null
      */
-    public function getFiles($fieldName)
+    public function getFiles($propertyName)
     {
-        return Files::find()->where(['IN', 'id', unserialize($this->owner->getAttribute($fieldName))])->all();
+        $filesId = unserialize($this->owner->getAttribute($propertyName));
+        if (is_array($filesId) && count($filesId) > 0) {
+            return Files::findAll($filesId);
+        }
+        return null;
+    }
+
+    /**
+     * Вернёт все файлы продукта в виде массива объектов
+     *
+     * @param string $propertyName Название свойства где лежат id файлов
+     * @param string $index Порядковый номер файла
+     *
+     * @return Files|null
+     */
+    public function getFile($propertyName, $index = 0)
+    {
+        $filesId = unserialize($this->owner->getAttribute($propertyName));
+        if (isset($filesId[$index])) {
+            return Files::findOne($filesId[$index]);
+        }
+        return null;
     }
 
     /**
      * Вернёт все id файлов продукта в виде массива
      *
-     * @param string $fieldName Название поля откуда брать id файлов
+     * @param string $propertyName Название поля откуда брать id файлов
      *
      * @return array
      */
-    public function getFilesId($fieldName)
+    public function getFilesId($propertyName)
     {
-        return ArrayHelper::getColumn($this->owner->getFiles($fieldName), 'id');
+        return ArrayHelper::getColumn($this->owner->getFiles($propertyName), 'id');
     }
 
     /**
@@ -116,7 +131,7 @@ class MultiImageHandler extends AbstractImageHandler
      */
     public function beforeDelete($event)
     {
-        foreach ($this->attributes as $fieldName) {
+        foreach (array_keys($this->attributes) as $fieldName) {
             if ($filesId = unserialize($this->getAttribute($fieldName))) {
                 foreach ($filesId as $fileId) {
                     if ($file = Files::findOne(['id' => $fileId])) {
