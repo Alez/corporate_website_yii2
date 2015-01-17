@@ -64,10 +64,10 @@ class DefaultController extends Controller
     {
         $model = new User();
         if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signUp()) {
-                if (Yii::$app->getUser()->login($user)) {
+            if ($user = $model->signUp(1)) {
+                //if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
-                }
+                //}
             }
         }
 

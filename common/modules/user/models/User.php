@@ -40,7 +40,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public $password;
     public $repeat;
-    public $generate = true;
+    public $generate;
 
     public $scenarios = ['manual'];
 
@@ -232,7 +232,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return User|null the saved model or null if saving fails
      */
-    public function signUp()
+    public function signUp($role = 10)
     {
         if ($this->validate()) {
             if ($this->generate && $this->email) {
@@ -240,6 +240,7 @@ class User extends ActiveRecord implements IdentityInterface
             } elseif ($this->email) {
                 $this->setPassword($this->password);
             }
+            $this->role = $role;
             $this->generateAuthKey();
             if ($this->save()) {
                 if ($this->email) {

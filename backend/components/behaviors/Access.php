@@ -22,7 +22,7 @@ class Access extends Behavior
             if (Yii::$app->user->isGuest) {
                 Yii::$app->getResponse()->redirect('@web/login');
             }
-            if ((int)Yii::$app->user->identity->role !== 1) {
+            if (!Yii::$app->user->isGuest && (int)Yii::$app->user->identity->role !== 1) {
                 Yii::$app->getResponse()->redirect('@web/login');
             }
         }
