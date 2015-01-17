@@ -1,7 +1,0 @@
-.galleryEditWrapper .dropImageAtCursor {
-    cursor: pointer;
-    display: block;
-    border: none;
-    background: none;
-    border-bottom: dashed 1px #000;
-}
