@@ -11,6 +11,7 @@ use yii\widgets\ActiveForm;
 ?>
 <? if (!isset($model)) {
     $model = new ContactForm();
+    $model->url = $model->url = $_SERVER['REQUEST_URI'];;
 } ?>
 <? $form = ActiveForm::begin([
     'action' => '/contact_form/default/contact',
@@ -36,7 +37,7 @@ echo $field;
 
 <?= Html::button(isset($buttonText) ? $buttonText : 'Заказать звонок', [
     'type' => 'submit',
-])?>
+]) ?>
 
 <?= Html::img('/images/loader.gif', [
     'class' => 'loader-js loader',

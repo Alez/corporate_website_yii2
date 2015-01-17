@@ -17,7 +17,6 @@ class DefaultController extends Controller
                 if ($contactForm->send()) {
                     return $this->renderAjax('success');
                 }
-
             } else {
                 return $this->renderAjax('contactForm', [
                         'model' => $contactForm,

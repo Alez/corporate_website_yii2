@@ -5,22 +5,23 @@ namespace frontend\modules\contact_form\models;
 use Yii;
 use yii\base\Exception;
 use yii\base\Model;
-use common\modules\service_info\models\ServiceInfo;
+use common\modules\settings\models\Settings;
 
 class ContactForm extends Model
 {
     public $name;
     public $phone;
     public $url;
-    public $article;
+    public $mail;
+    public $comment;
 
     public function rules()
     {
         return [
             [['name', 'phone'], 'required'],
-            [['name', 'phone', 'url', 'article'], 'safe'],
-            [['name', 'phone'], 'trim'],
-            [['name', 'phone'], 'string', 'max' => 255],
+            [['name', 'phone', 'mail'], 'trim'],
+            [['name', 'phone', 'mail', 'url'], 'string', 'max' => 255],
+            [['comment'], 'string'],
         ];
     }
 
@@ -40,16 +41,17 @@ class ContactForm extends Model
      */
     public function send()
     {
-        if ($email = ServiceInfo::findOne(['slug' => 'notificationEmail'])->content) {
+        if ($email = Settings::findOne(['slug' => 'notificationEmail'])->value) {
             Yii::$app->mailer->compose('layouts/callback', [
                     'name'    => $this->name,
                     'phone'   => $this->phone,
+                    'mail'    => $this->mail,
+                    'comment' => $this->comment,
                     'url'     => $this->url,
-                    'article' => $this->article,
                 ])
                 ->setFrom('webmaster@' . $_SERVER['SERVER_NAME'])
                 ->setTo($email)
-                ->setSubject('Заявка на звонок с сайта')
+                ->setSubject('Заявка с сайта')
                 ->send();
         } else {
             throw new Exception('Значение для email в настройках не установлено');
