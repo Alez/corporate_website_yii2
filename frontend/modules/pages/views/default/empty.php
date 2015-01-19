@@ -4,11 +4,15 @@ use common\modules\pages\models\PagesParams;
 use common\modules\pages\models\Pages;
 
 /* @var $this yii\web\View */
+
+$this->params['menu'] = Pages::get('slug');
+$this->title = Pages::get('name');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="container">
     <div class="row">
         <div class="small-12 columns">
-            <h2><?= Pages::get('name') ?></h2>
+            <h2><?= $this->title ?></h2>
         </div>
     </div>
     <div class="row">

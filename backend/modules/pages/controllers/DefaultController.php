@@ -75,7 +75,7 @@ class DefaultController extends \yii\web\Controller
             }
 
             // Возьмём все параметры страницы
-            $params = $page->getPagesParams()->joinWith('pagesTemplatesParams')->all();
+            $params = $page->getPagesParams()->joinWith('template')->all();
 
             /*
              * Если это обновление параметров, то проиндексируем элементы массива ID'шниками.
@@ -87,7 +87,7 @@ class DefaultController extends \yii\web\Controller
 
             } else {
                 $params = ArrayHelper::index($params, function($element) {
-                        return 'template_' . $element->pagesTemplatesParams->id;
+                        return 'template_' . $element->template->id;
                     });
             }
             foreach ($params as $key => $param) {
@@ -136,7 +136,7 @@ class DefaultController extends \yii\web\Controller
                 $page->setAttribute('pages_template_id', Yii::$app->request->getQueryParam('template'));
                 $params = PagesParams::newPageParams(Yii::$app->request->getQueryParam('template'));
             } else {
-                $params = $page->getPagesParams()->joinWith('pagesTemplatesParams')->all();
+                $params = $page->getPagesParams()->joinWith('template')->all();
             }
             return $this->render('edit', [
                     'page' => $page,

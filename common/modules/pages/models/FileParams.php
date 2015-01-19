@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property string $page_id
  * @property string $value
  *
- * @property PagesTemplatesParams $pagesTemplatesParams
+ * @property PagesTemplatesParams $template
  * @property Pages $page
  */
 class FileParams extends PagesParams implements PagesParamsInterface
@@ -43,14 +43,6 @@ class FileParams extends PagesParams implements PagesParamsInterface
         }
 
         return parent::beforeDelete();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPagesTemplatesParams()
-    {
-        return $this->hasOne(PagesTemplatesParams::className(), ['id' => 'pages_templates_params_id']);
     }
 
     /**

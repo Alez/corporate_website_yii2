@@ -37,13 +37,13 @@ use common\modules\pages\models\TextareaParams;
             $i = 0;
             foreach ($params as $param) {
                 $i++;
-                switch ($param->type) {
+                switch ($param->template->type) {
                     // Текстовое поле
                     case TextParams::TYPE:
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]value")
-                            ->label($param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label($param->template->name, [
                                     'for' => 'input' . $i,
                                 ])
                             ->textInput([
@@ -54,7 +54,7 @@ use common\modules\pages\models\TextareaParams;
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]value")
-                            ->label($param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label($param->template->name, [
                                 'for' => 'input' . $i,
                             ])
                             ->textarea([
@@ -67,7 +67,7 @@ use common\modules\pages\models\TextareaParams;
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]value")
-                            ->label($param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label($param->template->name, [
                                     'for' => 'input' . $i,
                                 ])
                             ->widget(Redactor::className(), [
@@ -108,7 +108,7 @@ use common\modules\pages\models\TextareaParams;
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label('Сменить - ' . $param->template->name, [
                                     'for' => 'input' . $i,
                                 ])
                             ->fileInput();
@@ -123,7 +123,7 @@ use common\modules\pages\models\TextareaParams;
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label('Сменить - ' . $param->template->name, [
                                     'for' => 'input' . $i,
                                 ])
                             ->widget(ImageInput::className(), [
@@ -136,7 +136,7 @@ use common\modules\pages\models\TextareaParams;
                         $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
                         echo $form
                             ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->pagesTemplatesParams->getAttribute('name'), [
+                            ->label('Сменить - ' . $param->template->name, [
                                     'for' => 'input' . $i,
                                 ])
                             ->widget(ImageInput::className(), [

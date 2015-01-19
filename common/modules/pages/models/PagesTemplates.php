@@ -11,7 +11,7 @@ use Yii;
  * @property string $name
  *
  * @property Pages[] $pages
- * @property PagesTemplatesParams[] $pagesTemplatesParams
+ * @property PagesTemplatesParams[] $template
  */
 class PagesTemplates extends \yii\db\ActiveRecord
 {

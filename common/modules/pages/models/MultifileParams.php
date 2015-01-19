@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property string $page_id
  * @property string $value
  *
- * @property PagesTemplatesParams $pagesTemplatesParams
+ * @property PagesTemplatesParams $template
  * @property Pages $page
  */
 class MultifileParams extends PagesParams implements PagesParamsInterface

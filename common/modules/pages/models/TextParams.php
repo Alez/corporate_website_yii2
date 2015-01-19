@@ -11,7 +11,7 @@ use Yii;
  * @property string $page_id
  * @property string $value
  *
- * @property PagesTemplatesParams $pagesTemplatesParams
+ * @property PagesTemplatesParams $template
  * @property Pages $page
  */
 class TextParams extends PagesParams implements PagesParamsInterface

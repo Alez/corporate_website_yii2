@@ -3,6 +3,7 @@
 namespace common\modules\pages\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -12,7 +13,7 @@ use yii\web\NotFoundHttpException;
  * @property string $page_id
  * @property string $value
  *
- * @property PagesTemplatesParams $pagesTemplatesParams
+ * @property PagesTemplatesParams $template
  * @property Pages $page
  */
 class PagesParams extends \yii\db\ActiveRecord
@@ -25,9 +26,6 @@ class PagesParams extends \yii\db\ActiveRecord
 
     /* @var PagesTemplatesParams[] Кэш всех возможных параметров для определения типа при создании экземпляра */
     public static $pagesParamsTemplateCache;
-
-    public $slug;
-    public $type;
 
     /**
      * @inheritdoc
@@ -98,8 +96,6 @@ class PagesParams extends \yii\db\ActiveRecord
             default:
                 throw new NotFoundHttpException('Тип параметра не найден');
         }
-        $param->slug = self::$pagesParamsTemplateCache[$row['pages_templates_params_id']]['slug'];
-        $param->type = self::$pagesParamsTemplateCache[$row['pages_templates_params_id']]['type'];
 
         return $param;
     }
@@ -107,7 +103,7 @@ class PagesParams extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPagesTemplatesParams()
+    public function getTemplate()
     {
         return $this->hasOne(PagesTemplatesParams::className(), ['id' => 'pages_templates_params_id']);
     }
@@ -134,18 +130,17 @@ class PagesParams extends \yii\db\ActiveRecord
         $pagesTemplatesParams = PagesTemplatesParams::find()->where(['pages_templates_id' => $template])->all();
         $newParams = [];
 
-        /* @var $pagesTemplatesParam PagesTemplatesParams  */
-        foreach ($pagesTemplatesParams as $pagesTemplatesParam) {
-            $type = __NAMESPACE__ . '\\' . ucfirst($pagesTemplatesParam->getAttribute('type')) . 'Params';
+        /* @var $template PagesTemplatesParams  */
+        foreach ($pagesTemplatesParams as $template) {
+            $type = __NAMESPACE__ . '\\' . ucfirst($template->getAttribute('type')) . 'Params';
             try {
                 $newParam = new $type();
             } catch (\Exception $e) {
                 throw new NotFoundHttpException('Тип параметра не найден');
             }
-            $newParam->setAttribute('pages_templates_params_id', $pagesTemplatesParam->getAttribute('id'));
+            $newParam->setAttribute('pages_templates_params_id', $template->getAttribute('id'));
             $newParam->setAttribute('id', '');
-            $newParam->slug = $pagesTemplatesParam->slug;
-            $newParam->type = $pagesTemplatesParam->type;
+
             $newParams[] = $newParam;
         }
 
@@ -189,9 +184,13 @@ class PagesParams extends \yii\db\ActiveRecord
     public static function retrieveParams($page)
     {
         self::$pagesParams[$page['slug']] = PagesParams::find()
+            ->joinWith('template')
             ->where(['page_id' => $page['id']])
-            ->indexBy('slug')
             ->all();
+
+        self::$pagesParams[$page['slug']] = ArrayHelper::index(self::$pagesParams[$page['slug']], function($model) {
+            return $model->template->slug;
+        });
     }
 
     /**
