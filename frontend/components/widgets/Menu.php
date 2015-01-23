@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\modules\menu\widgets;
+namespace frontend\components\widgets;
 
 class Menu extends \yii\widgets\Menu
 {
