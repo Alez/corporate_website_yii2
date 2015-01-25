@@ -16,6 +16,9 @@ use common\modules\pages\models\ImageParams;
 use common\modules\pages\models\MultiimageParams;
 use common\modules\files\widgets\imageinput\ImageInput;
 use common\modules\pages\models\TextareaParams;
+use common\modules\pages\models\DatetimeParams;
+use kartik\widgets\DateTimePicker;
+use backend\components\widgets\transliterateInput\TransliterateInput;
 
 
 /* @var $this yii\web\View */
@@ -33,44 +36,29 @@ use common\modules\pages\models\TextareaParams;
         ]); ?>
     <div class="row">
         <div class="col-xs-9">
-            <?
-            $i = 0;
-            foreach ($params as $param) {
-                $i++;
-                switch ($param->template->type) {
+            <? $i = 0 ?>
+            <? foreach ($params as $param): ?>
+                <? $i++ ?>
+                <? $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id ?>
+                <? $field = $form->field($param, "[$name]value")->label($param->template->name, ['for' => 'input' . $i]) ?>
+                <? switch ($param->template->type):
                     // Текстовое поле
-                    case TextParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]value")
-                            ->label($param->template->name, [
-                                    'for' => 'input' . $i,
-                                ])
-                            ->textInput([
-                                    'id' => 'input' . $i,
-                                ]);
-                        break;
-                    case TextareaParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]value")
-                            ->label($param->template->name, [
-                                'for' => 'input' . $i,
-                            ])
-                            ->textarea([
+                    case TextParams::TYPE: ?>
+                        <?= $field->textInput(['id' => 'input' . $i]) ?>
+                        <? break ?>
+                    <? // Textarea поле ?>
+                    <? case TextareaParams::TYPE: ?>
+                        <?= $field->textarea([
                                 'id' => 'input' . $i,
                                 'rows' => '6',
-                            ]);
-                        break;
-                    // WYSIWYG
-                    case RedactorParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]value")
-                            ->label($param->template->name, [
-                                    'for' => 'input' . $i,
-                                ])
-                            ->widget(Redactor::className(), [
+                            ]) ?>
+                        <? break ?>
+                    <? case DatetimeParams::TYPE: ?>
+                        <?= $field->widget(DateTimePicker::className()) ?>
+                        <? break ?>
+                    <? // WYSIWYG ?>
+                    <? case RedactorParams::TYPE: ?>
+                        <?= $field->widget(Redactor::className(), [
                                     'clientOptions' => [
                                         'lang'       => 'ru',
                                         'buttons'    => [
@@ -101,53 +89,33 @@ use common\modules\pages\models\TextareaParams;
                                         'id' => 'input' . $i,
                                     ],
                                 ]
-                            );
-                        break;
-                    // Одиночный файл
-                    case FileParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->template->name, [
-                                    'for' => 'input' . $i,
-                                ])
-                            ->fileInput();
-                        break;
-                    // Мультизагрузка файлов
-                    case MultifileParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo 'Поля нет';
-                        break;
-                    // Одиночная картинка
-                    case ImageParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->template->name, [
-                                    'for' => 'input' . $i,
-                                ])
-                            ->widget(ImageInput::className(), [
+                            ) ?>
+                        <? break ?>
+                    <? // Одиночный файл ?>
+                    <? case FileParams::TYPE: ?>
+                        <?= $field->fileInput() ?>
+                        <? break ?>
+                    <? // Мультизагрузка файлов ?>
+                    <? case MultifileParams::TYPE: ?>
+                        <?= 'Поля нет' ?>
+                        <? break ?>
+                    <? // Одиночная картинка ?>
+                    <? case ImageParams::TYPE: ?>
+                        <?= $field->widget(ImageInput::className(), [
                                     'imageSource' => $param->file,
                                     'fieldName' => '',
-                                ]);
-                        break;
-                    // Мультизагрузка картинок
-                    case MultiimageParams::TYPE:
-                        $name = $param->getAttribute('id') ? $param->id : 'template_' . $param->pages_templates_params_id;
-                        echo $form
-                            ->field($param, "[$name]uploadFile")
-                            ->label('Сменить - ' . $param->template->name, [
-                                    'for' => 'input' . $i,
-                                ])
-                            ->widget(ImageInput::className(), [
+                                ]) ?>
+                        <? break ?>
+                    <? // Мультизагрузка картинок ?>
+                    <? case MultiimageParams::TYPE: ?>
+                        <?= $field->widget(ImageInput::className(), [
                                     'imageSource' => $param->getFiles(),
                                     'fieldName' => '',
                                     'multiple' => '',
-                                ]);
-                        break;
-                }
-            } ?>
-
+                                ]) ?>
+                        <? break ?>
+                <? endswitch ?>
+            <? endforeach ?>
             <div class="form-group">
                 <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
             </div>
@@ -164,7 +132,7 @@ use common\modules\pages\models\TextareaParams;
                     ],
                 ]) ?>
             <?= $form->field($page, 'name')->textInput() ?>
-            <?= $form->field($page, 'slug')->textInput() ?>
+            <?= $form->field($page, 'slug')->widget(TransliterateInput::className()) ?>
             <? if ($page->getAttribute('id')) {
                 echo Html::activeHiddenInput($page, 'id');
             } ?>

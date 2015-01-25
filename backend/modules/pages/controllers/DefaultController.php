@@ -97,8 +97,9 @@ class DefaultController extends \yii\web\Controller
             }
 
             // Загрузим простые поля. Поля так же попадут в $params по ссылке
+            /* @var $rawParam PagesParams */
             foreach ($rawParams as $key => $rawParam) {
-                PagesParams::loadMultiple([$key => $rawParam], Yii::$app->request->post());
+                PagesParams::loadMultiple([$key => $rawParam], Yii::$app->request->post(), $rawParam->formName());
             }
 
             // Загрузим файловые поля

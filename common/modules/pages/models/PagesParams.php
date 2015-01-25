@@ -93,6 +93,9 @@ class PagesParams extends \yii\db\ActiveRecord
             case TextareaParams::TYPE:
                 $param =  new TextareaParams();
                 break;
+            case DatetimeParams::TYPE:
+                $param =  new DatetimeParams();
+                break;
             default:
                 throw new NotFoundHttpException('Тип параметра не найден');
         }
