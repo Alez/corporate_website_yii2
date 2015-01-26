@@ -25,14 +25,22 @@ class DatetimeParams extends PagesParams implements PagesParamsInterface
         ]);
     }
 
-    public function setValue($value)
+    public function beforeSave($insert)
     {
-        $this->setAttribute('value', strtotime($value));
+        if ($this->value) {
+            $this->setAttribute('value', strtotime($this->value));
+
+        }
+
+        return parent::beforeSave($insert);
     }
 
-    public function getValue($format = 'd.m.y H:i')
+    public function afterFind()
     {
-        return date($format, $this->value);
+        parent::afterFind();
+        if ($this->value) {
+            $this->value = date('y-m-d H:i', $this->value);
+        }
     }
 
     /**
