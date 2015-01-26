@@ -54,7 +54,11 @@ use backend\components\widgets\transliterateInput\TransliterateInput;
                             ]) ?>
                         <? break ?>
                     <? case DatetimeParams::TYPE: ?>
-                        <?= $field->widget(DateTimePicker::className()) ?>
+                        <?= $field->widget(DateTimePicker::className(), [
+                            'pluginOptions' => [
+                                'autoclose' => true,
+                            ]
+                        ]) ?>
                         <? break ?>
                     <? // WYSIWYG ?>
                     <? case RedactorParams::TYPE: ?>
