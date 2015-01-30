@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model common\modules\contacts\models\Contacts[] */
@@ -18,18 +17,7 @@ use yii\helpers\ArrayHelper;
 
     <? foreach ($model as $field): ?>
 
-    <?= $form->field($field, "[$field->id]value")->label($field->name)->widget(Redactor::className(), [
-        'clientOptions' => [
-            'lang' => 'ru',
-            'buttons' => [
-                'formatting',  'bold', 'italic', 'deleted',
-                'unorderedlist', 'orderedlist', 'outdent', 'indent',
-                'file', 'table', 'link', 'alignment', 'horizontalrule'
-            ],
-            'linebreaks' => true,
-            'minHeight' => 150,
-        ],
-    ]) ?>
+    <?= $form->field($field, "[$field->id]value")->label($field->name)->widget(Redactor::className()) ?>
 
     <? endforeach ?>
 
