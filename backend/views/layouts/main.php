@@ -1,10 +1,10 @@
 <?php
 use backend\assets_b\AppAsset;
 use yii\helpers\Html;
-use yii\widgets\Breadcrumbs;
 use yii\helpers\Url;
+use yii\widgets\Breadcrumbs;
 use common\modules\pages\models\Pages;
-//use common\modules\static_pages\models\StaticPages;
+use backend\components\widgets\Menu;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -81,66 +81,13 @@ AppAsset::register($this);
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
             <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="<?= Url::to('@web/') ?>">
-                        <i class="fa fa-dashboard"></i> <span>Панель управления</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= Url::to('@web/settings/default/index') ?>">
-                        <i class="fa fa-cog"></i>
-                        <span>Настройки</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= Url::to('@web/contacts/default/index') ?>">
-                        <i class="fa fa-envelope"></i>
-                        <span>Контактная информация</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-table"></i>
-                        <span>Записи</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="<?= Url::toRoute(['/entities/certificates/index']) ?>"><i class="fa fa-angle-double-right"></i> Сертификаты</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/doctor/index']) ?>"><i class="fa fa-angle-double-right"></i> Врачи</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/doctordepartment/index']) ?>"><i class="fa fa-angle-double-right"></i> Врачебные Отделения</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/gallery/index']) ?>"><i class="fa fa-angle-double-right"></i> Галлерея</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/mediaaboutus/index']) ?>"><i class="fa fa-angle-double-right"></i> Сми о нас</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/news/index']) ?>"><i class="fa fa-angle-double-right"></i> Новости</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/price/index']) ?>"><i class="fa fa-angle-double-right"></i> Цены</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/pricecategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Цен</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/promo/index']) ?>"><i class="fa fa-angle-double-right"></i> Акции</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/reviews/index']) ?>"><i class="fa fa-angle-double-right"></i> Отзывы</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/service/index']) ?>"><i class="fa fa-angle-double-right"></i> Услуги</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/servicecategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Услуг</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/video/index']) ?>"><i class="fa fa-angle-double-right"></i> Видео</a></li>
-                        <li><a href="<?= Url::toRoute(['/entities/videocategory/index']) ?>"><i class="fa fa-angle-double-right"></i> Категории Видео</a></li>
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-files-o"></i>
-                        <span>Страницы</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <? /* @var $page Pages */
-                        foreach (Pages::find()->all() as $page): ?>
-                            <li>
-                                <a href="<?= Url::to('@web/pages/default/edit?slug=' . $page->getAttribute('slug')) ?>">
-                                    <i class="fa fa-angle-double-right"></i> <?= $page->getAttribute('name') ?>
-                                </a>
-                            </li>
-                        <? endforeach ?>
-                        <li><a href="<?= Url::to('@web/pages/default/edit') ?>"><i class="fa fa-plus"></i> Добавить</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <?= Menu::widget([
+                'submenuTemplate' => "\n<ul class=\"treeview-menu\">\n{items}\n</ul>\n",
+                'showAddPage' => false,
+                'options' => [
+                    'class' => 'sidebar-menu',
+                ],
+            ]) ?>
         </section>
         <!-- /.sidebar -->
     </aside>
