@@ -19,16 +19,16 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "2.0.2",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "kartik-v/yii2-widgets": "dev-master",
-        "2amigos/yii2-transliterator-helper": "dev-master",
+        "yiisoft/yii2-authclient": "*",
         "yiisoft/yii2-imagine": "*",
+        "2amigos/yii2-transliterator-helper": "dev-master",
         "yiidoc/yii2-redactor": "*",
+        "kartik-v/yii2-widgets": "dev-master",
         "kartik-v/yii2-builder": "dev-master",
-        "kartik-v/yii2-grid": "dev-master",
-        "yiisoft/yii2-authclient": "*"
+        "kartik-v/yii2-grid": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
