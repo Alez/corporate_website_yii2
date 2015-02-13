@@ -187,7 +187,7 @@ class PagesParams extends \yii\db\ActiveRecord
     public static function retrieveParams($page)
     {
         self::$pagesParams[$page['slug']] = PagesParams::find()
-            ->joinWith('template')
+            ->with('template')
             ->where(['page_id' => $page['id']])
             ->all();
 

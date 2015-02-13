@@ -42,7 +42,7 @@ class MaterialSearch extends Material
      */
     public function search($params)
     {
-        $query = Material::find()->joinWith('baseCategory');
+        $query = Material::find()->with('baseCategory');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

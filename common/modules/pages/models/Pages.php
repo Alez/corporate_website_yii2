@@ -110,7 +110,7 @@ class Pages extends \yii\db\ActiveRecord
 
         $page = Pages::find()
             ->where([Pages::tableName() . '.slug' => $slug])
-            ->joinWith('pagesTemplate')
+            ->with('pagesTemplate')
             ->asArray()
             ->one();
 

@@ -43,7 +43,7 @@ class CategorySearch extends Category
      */
     public function search($params)
     {
-        $query = Category::find()->select('`category`.`id`, `category`.`name`, `category`.`parent_id`')->joinWith('parent');
+        $query = Category::find()->select('`category`.`id`, `category`.`name`, `category`.`parent_id`')->with('parent');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

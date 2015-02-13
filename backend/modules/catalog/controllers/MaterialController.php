@@ -139,7 +139,7 @@ class MaterialController extends Controller
             'crosslinkingDataProvider' => new ActiveDataProvider([
                     'query' => MaterialCrosslinking::find()
                         ->where(['material_id' => $model->getAttribute('id')])
-                        ->joinWith('crosslinkedMaterial'),
+                        ->with('crosslinkedMaterial'),
                 ]),
             'externalCrosslinkingDataProvider' => new ActiveDataProvider([
                     'query' => MaterialExternalCrosslinking::find()
