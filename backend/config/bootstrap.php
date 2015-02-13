@@ -7,6 +7,5 @@
         'unorderedlist', 'orderedlist', 'outdent', 'indent',
         'file', 'table', 'link', 'alignment', 'horizontalrule'
     ],
-    'linebreaks' => true,
     'minHeight' => 150,
 ]]);
