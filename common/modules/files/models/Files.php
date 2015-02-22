@@ -243,7 +243,8 @@ class Files extends \yii\db\ActiveRecord
         }
 
         if ($this->makeThumbIfNotExist($width, $height, $mode)) {
-            $extension = end(explode('.', $this->name));
+            $parts = explode('.', $this->name);
+            $extension = end($parts);
             $filename = preg_replace('/ /', '_', basename($this->name, '.' . $extension));
 
             return Yii::getAlias('@webUploads') .
@@ -282,7 +283,8 @@ class Files extends \yii\db\ActiveRecord
 
     public function getThumbFsPath($woName = false, $width = null, $height = null, $mode)
     {
-        $extension = end(explode('.', $this->name));
+        $parts = explode('.', $this->name);
+        $extension = end($parts);
         $filename = preg_replace('/ /', '_', basename($this->name, '.' . $extension));
 
         $path = Yii::getAlias('@uploads') .
