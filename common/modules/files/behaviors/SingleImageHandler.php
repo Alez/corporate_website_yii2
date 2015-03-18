@@ -95,8 +95,8 @@ class SingleImageHandler extends AbstractImageHandler
     public function beforeDelete($event)
     {
         foreach (array_keys($this->attributes) as $fieldName) {
-            if ($fileId = $event->sender->getAttribute($fieldName)) {
-                if ($file = Files::findOne(['id' => $fileId])) {
+            if ($fileId = $this->owner->getAttribute($fieldName)) {
+                if ($file = Files::findOne($fileId)) {
                     $file->delete();
                 }
             }

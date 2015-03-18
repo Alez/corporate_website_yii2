@@ -98,15 +98,19 @@ class MultiImageHandler extends AbstractImageHandler
      * Вернёт все файлы продукта в виде массива объектов
      *
      * @param string $propertyName Название свойства где лежат id файлов
-     * @param string $index Порядковый номер файла
+     * @param string $id ID файла
      *
      * @return Files|null
      */
-    public function getFile($propertyName, $index = 0)
+    public function getFile($propertyName, $id = null)
     {
         $filesId = unserialize($this->owner->getAttribute($propertyName));
-        if (isset($filesId[$index])) {
-            return Files::findOne($filesId[$index]);
+        if (is_null($id) && isset($filesId[0])) {
+            return Files::findOne($filesId[0]);
+        }
+        $flippedArray = array_flip($filesId);
+        if (isset($flippedArray[$id])) {
+            return Files::findOne($id);
         }
         return null;
     }
@@ -132,9 +136,9 @@ class MultiImageHandler extends AbstractImageHandler
     public function beforeDelete($event)
     {
         foreach (array_keys($this->attributes) as $fieldName) {
-            if ($filesId = unserialize($this->getAttribute($fieldName))) {
+            if ($filesId = unserialize($this->owner->getAttribute($fieldName))) {
                 foreach ($filesId as $fileId) {
-                    if ($file = Files::findOne(['id' => $fileId])) {
+                    if ($file = Files::findOne($fileId)) {
                         $file->delete();
                     }
                 }
