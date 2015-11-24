@@ -255,7 +255,7 @@ class Files extends \yii\db\ActiveRecord
                 $extension . '/' .
                 $mode . '/' .
                 $width . '/' . 
-				$height . '/' .
+                $height . '/' .
                 $this->name;
         }
 
