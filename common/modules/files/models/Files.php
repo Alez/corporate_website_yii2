@@ -243,9 +243,9 @@ class Files extends \yii\db\ActiveRecord
         }
 
         if ($this->makeThumbIfNotExist($width, $height, $mode)) {
-            $parts = explode('.', $this->name);
-            $extension = end($parts);
-            $filename = preg_replace('/ /', '_', basename($this->name, '.' . $extension));
+            $pathinfo = pathinfo($this->name);
+            $extension = $pathinfo['extension'];
+            $filename = str_replace(' ', '_', $pathinfo['filename']);
 
             return Yii::getAlias('@webUploads') .
                 Yii::getAlias('@thumbs') . '/' .
@@ -254,7 +254,8 @@ class Files extends \yii\db\ActiveRecord
                 $filename . '/' .
                 $extension . '/' .
                 $mode . '/' .
-                "{$width}/{$height}/" .
+                $width . '/' . 
+				$height . '/' .
                 $this->name;
         }
 
