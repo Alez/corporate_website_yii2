@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var $galleryList = $('.galleryList-js');
 
     // Ищем кнопки во всплывающем окне, которые позволяют обрезать фотографии, вешаем обработчики
-    var wideBtnSelector = '.cropper-run-wide-js',
-        squareBtnSelector = '.cropper-run-square-js',
+    var proportionalBtnSelector = '.cropper-run-proportional-js',
         releaseBtnSelector = '.cropper-run-release-js',
         destroyBtnSelector = '.cropper-run-destroy-js',
         popup = document.getElementById('editPhotoPopup'),
@@ -52,12 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    $(document.body).on('click', wideBtnSelector, function() {
-        runCropper(16/9);
-    });
-    $(document.body).on('click', squareBtnSelector, function() {
-        runCropper(5/4);
-    });
+    $(document.body).on('click', proportionalBtnSelector, function(e) {
+        var width = e.target.getAttribute('data-width'),
+            height = e.target.getAttribute('data-height');
+        runCropper(width / height);
     $(document.body).on('click', releaseBtnSelector, function() {
         runCropper('release');
     });

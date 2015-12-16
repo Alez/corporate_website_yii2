@@ -14,12 +14,12 @@ use yii\bootstrap\ActiveForm;
         </div>
         <div class="modal-body editImagePopup">
             <div class="imageWrapper">
-                <img class="cropper-js" src="<?= $image->getSrc() ?>" alt="<?= $image->alt ?>">
+                <img class="cropper-js" src="<?= $image->getSrc() ?>?timestamp=<?= time() ?>" alt="<?= $image->alt ?>">
             </div>
             <div class="cropSettings">
                 <p class="bg-info cropLabel">Обрезка изображения</p>
-                <div class="cropper-run-wide-js cropper-run btn btn-info">[16:9]</div>
-                <div class="cropper-run-square-js cropper-run btn btn-info">[5:4]</div>
+                <div class="cropper-run-proportional-js cropper-run btn btn-info" data-width="16" data-height="9">[16:9]</div>
+                <div class="cropper-run-proportional-js cropper-run btn btn-info" data-width="5" data-height="4">[5:4]</div>
                 <div class="cropper-run-release-js cropper-run- btn btn-info">Без учёта пропорций</div>
                 <div class="cropper-run-destroy-js cropper-run btn btn-danger pull-right" style="display: none">Отменить выделение</div>
             </div>

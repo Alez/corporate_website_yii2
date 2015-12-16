@@ -1,4 +1,4 @@
-filesModule = (function() {
+var filesModule = (function() {
     'use strict';
     var self,
 
