@@ -45,7 +45,7 @@ use yii\bootstrap\Modal;
 } ?>
     <div class="form-group">
         <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Добавить') ?> : <?= $generator->generateString('Сохранить') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        <?= "<?= " ?>Html::submitButton('Применить', ['class' => 'btn btn-default', 'value' => 'apply', 'name' => 'submit']) ?>
+        <?= "<?= " ?>Html::submitButton('Применить', ['class' => 'btn btn-default', 'value' => '1', 'name' => 'apply']) ?>
     </div>
 
     <?= "<?php " ?>ActiveForm::end(); ?>

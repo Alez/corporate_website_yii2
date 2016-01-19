@@ -92,7 +92,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = new <?= $modelClass ?>();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (Yii::$app->request->getBodyParam('submit') === 'apply') {
+            if (Yii::$app->request->getBodyParam('apply') === '1') {
                 return $this->redirect('update?id=' . $model->id, 302);
             }
             return $this->redirect(['index']);
@@ -114,7 +114,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (Yii::$app->request->getBodyParam('submit') === 'apply') {
+            if (Yii::$app->request->getBodyParam('apply') === '1') {
                 return $this->redirect('update?id=' . $model->id, 302);
             }
             return $this->redirect(['index']);
