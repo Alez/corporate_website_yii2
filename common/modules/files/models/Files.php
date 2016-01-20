@@ -3,6 +3,7 @@
 namespace common\modules\files\models;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 use yii\imagine\Image as Imagine;
 use dosamigos\transliterator\TransliteratorHelper;
@@ -110,6 +111,7 @@ class Files extends \yii\db\ActiveRecord
     public function beforeDelete()
     {
         // Перед удалением из БД нужно снести и файл
+        $this->deleteThumbs();
         $this->__deleteFile();
 
         return parent::beforeDelete();
@@ -167,12 +169,12 @@ class Files extends \yii\db\ActiveRecord
 
         if ($this->__addToFs($file, $shortModelClassName, $path)) {
             $this->load([
-                    'model' => $shortModelClassName,
-                    'name' => TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension(),
-                    'path' => $path,
-                    'alt' => $alt,
-                    'title' => $title,
-                ], '');
+                'model' => $shortModelClassName,
+                'name' => TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension(),
+                'path' => $path,
+                'alt' => $alt,
+                'title' => $title,
+            ], '');
 
             if ($this->save()) {
                 return (int)$this->id;
@@ -192,13 +194,8 @@ class Files extends \yii\db\ActiveRecord
      */
     private function __addToFs($file, $model, $md5Path, $filename = null)
     {
-        $pathWoName = Yii::getAlias('@uploads') . '/' .
-            $model . '/' .
-            $md5Path;
-
-        if (!file_exists($pathWoName)) {
-            mkdir($pathWoName, 0775, true);
-        }
+        $pathWoName = Yii::getAlias('@uploads') . '/' . $model . '/' . $md5Path;
+        FileHelper::createDirectory($pathWoName);
         if ($file instanceof UploadedFile) {
             $fullFsPath = $pathWoName . TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension();
             return $file->saveAs($fullFsPath);
@@ -215,7 +212,7 @@ class Files extends \yii\db\ActiveRecord
      */
     public static function makeHashPath()
     {
-        $md5FileName = hash('md5', Yii::$app->security->generateRandomString(8) . mktime());
+        $md5FileName = hash('md5', Yii::$app->security->generateRandomString(8) . time());
         $path = substr($md5FileName, 0, 1) . '/';
         $path .= substr($md5FileName, 1, 2) . '/';
         $path .= substr($md5FileName, 3, 2) . '/';
@@ -231,9 +228,9 @@ class Files extends \yii\db\ActiveRecord
     public function getSrc()
     {
         return Yii::getAlias('@webUploads') . '/' .
-            $this->model . '/' .
-            $this->path .
-            $this->name;
+        $this->model . '/' .
+        $this->path .
+        $this->name;
     }
 
     public function getThumbSrc($width, $height, $mode = self::EXACT)
@@ -248,15 +245,15 @@ class Files extends \yii\db\ActiveRecord
             $filename = str_replace(' ', '_', $pathinfo['filename']);
 
             return Yii::getAlias('@webUploads') .
-                Yii::getAlias('@thumbs') . '/' .
-                $this->model . '/' .
-                $this->path .
-                $filename . '/' .
-                $extension . '/' .
-                $mode . '/' .
-                $width . '/' . 
-                $height . '/' .
-                $this->name;
+            Yii::getAlias('@thumbs') . '/' .
+            $this->model . '/' .
+            $this->path .
+            $filename . '/' .
+            $extension . '/' .
+            $mode . '/' .
+            $width . '/' .
+            $height . '/' .
+            $this->name;
         }
 
         return false;
@@ -284,17 +281,7 @@ class Files extends \yii\db\ActiveRecord
 
     public function getThumbFsPath($woName = false, $width = null, $height = null, $mode)
     {
-        $parts = explode('.', $this->name);
-        $extension = end($parts);
-        $filename = preg_replace('/ /', '_', basename($this->name, '.' . $extension));
-
-        $path = Yii::getAlias('@uploads') .
-            Yii::getAlias('@thumbs') . '/' .
-            $this->model . '/' .
-            $this->path .
-            $filename . '/' .
-            $extension . '/' .
-            $mode . '/';
+        $path = $this->getThumbFsFolder() . $mode . '/';
 
         if (!$width && !$height) {
             return $path;
@@ -320,9 +307,7 @@ class Files extends \yii\db\ActiveRecord
             return true;
         }
 
-        if (!file_exists($thumbDir)) {
-            mkdir($thumbDir, 0775, true);
-        }
+        FileHelper::createDirectory($thumbDir);
 
         self::resize($this->getFsPath(), $width, $height, 80, $mode, $thumbFile);
 
@@ -338,6 +323,7 @@ class Files extends \yii\db\ActiveRecord
     {
         $imageId = $this->id;
         if (unlink($this->getFsPath())) {
+            $this->clearPathRecursively($this->getFsPath(true));
             return $imageId;
         }
 
@@ -384,7 +370,7 @@ class Files extends \yii\db\ActiveRecord
 
         if ($result) {
             return Yii::$app->params['baseUrl'] . Yii::getAlias('@webUploads') . '/' . $moduleName . '/' . $md5Path .
-                TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension();
+            TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension();
         }
 
         return false;
@@ -402,9 +388,9 @@ class Files extends \yii\db\ActiveRecord
         $file->name = $this->getAttribute('name');
         if ($this->__addToFs($file, $this->getAttribute('model'), $this->getAttribute('path'))) {
             return $this->getAttribute('id');
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -443,16 +429,14 @@ class Files extends \yii\db\ActiveRecord
             $this->getAttribute('model') . '/' .
             $md5Path;
 
-        if (!file_exists($pathWoName)) {
-            mkdir($pathWoName, 0775, true);
-        }
+        FileHelper::createDirectory($pathWoName);
         if (copy($this->getFsPath(), $pathWoName . $this->name)) {
             $newfile = new Files;
             $newfile->setAttributes($this->getAttributes());
             $newfile->setAttributes([
-                    'id'   => null,
-                    'path' => $md5Path,
-                ]);
+                'id'   => null,
+                'path' => $md5Path,
+            ]);
             if ($newfile->save()) {
                 self::resize($newfile->getFsPath(), $width, $height, 100, self::PROPORTIONAL);
 
@@ -503,21 +487,64 @@ class Files extends \yii\db\ActiveRecord
         if ($this->__addToFs($file, $modelClassName, $md5Path, $filename)) {
             $this->load([
                 'model' => $modelClassName,
-                'name' => TransliteratorHelper::process($filename, '', 'en'),
-                'path' => $md5Path,
-                'alt' => $alt,
+                'name'  => TransliteratorHelper::process($filename, '', 'en'),
+                'path'  => $md5Path,
+                'alt'   => $alt,
                 'title' => $title,
             ], '');
 
             if ($this->save()) {
-                $fileId = (int)$this->id;
-                if ($uploadedFile = self::findOne($fileId)) {
+                if ($uploadedFile = self::findOne($this->id)) {
                     self::resize($uploadedFile->getFsPath(), $width, $height, $quality, $mode);
                 }
 
-                return $fileId;
+                return $this->id;
             }
         }
         return false;
+    }
+
+    /**
+     * Папка содержащая ресайзенные изображения оригинальной картинки
+     * @return string
+     */
+    public function getThumbFsFolder()
+    {
+        $parts = explode('.', $this->name);
+        $extension = end($parts);
+        $filename = preg_replace('/ /', '_', basename($this->name, '.' . $extension));
+
+        return Yii::getAlias('@uploads') .
+            Yii::getAlias('@thumbs') . '/' .
+            $this->model . '/' .
+            $this->path .
+            $filename . '/' .
+            $extension . '/';
+    }
+
+    /**
+     * Удалит все превью картинки
+     */
+    public function deleteThumbs()
+    {
+        FileHelper::removeDirectory($this->getThumbFsFolder());
+        $this->clearPathRecursively($this->getThumbFsFolder() . '..');
+    }
+
+    /**
+     * Почистит каталоги снизу вверх до каталога загрузки файлов
+     * @param string $path
+     */
+    public function clearPathRecursively($path)
+    {
+        $path = FileHelper::normalizePath($path);
+        $uploadPath = FileHelper::normalizePath(Yii::getAlias('@uploads'));
+
+
+        if (is_dir($path) && count(scandir($path)) === 2 && $path !== $uploadPath) {
+            FileHelper::removeDirectory($path);
+            $path = FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . '..');
+            $this->clearPathRecursively($path);
+        }
     }
 }
