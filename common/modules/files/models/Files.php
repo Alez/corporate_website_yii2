@@ -550,4 +550,22 @@ class Files extends \yii\db\ActiveRecord
             $this->clearPathRecursively($path);
         }
     }
+	
+    /**
+     * Размер файла
+     * @return int|false
+     */
+    public function getLength()
+    {
+        return filesize($this->getFsPath());
+    }
+
+    /**
+     * MIME-тип файла
+     * @return string|false
+     */
+    public function getFileType()
+    {
+        return finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->getFsPath());
+    }
 }
