@@ -200,6 +200,9 @@ class Files extends \yii\db\ActiveRecord
             $fullFsPath = $pathWoName . TransliteratorHelper::process($file->getBaseName(), '', 'en') . '.' . $file->getExtension();
             return $file->saveAs($fullFsPath);
         } else {
+		    if (!$filename) {
+                $filename = substr(md5(mt_rand()), 0, 7); // random name
+            }
             return !!file_put_contents($pathWoName . TransliteratorHelper::process($filename, '', 'en'), $file);
         }
     }
