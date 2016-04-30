@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 
-/* @var $image common\modules\files\models\Files */
+/* @var $image common\modules\files\models\FileRecord */
 /* @var $model mixed */
 /* @var $fieldName string */
 /* @var $isMultiple bool Это множественный инпут? */
@@ -11,13 +11,12 @@ use yii\helpers\Url;
          alt="<?= $image->getAttribute('alt') ?>"
          data-edit-url="<?= Url::toRoute('/files/image/imageeditpopup') ?>">
     <i class="fileDelete-js"
-        data-url="<?= Url::to('/files/image/deletefile') ?>"
-        data-id="<?= $model->getAttribute('id') ?>"
-        data-model="<?= $model->className() ?>"
+        data-delete-url="<?= Url::to('deletefile') ?>"
+        data-delete-id="<?= $model->getAttribute('id') ?>"
         <? if ($isMultiple): ?>
-            data-fileid="<?= $image->getAttribute('id') ?>"
+            data-delete-fileid="<?= $image->getAttribute('id') ?>"
         <? endif ?>
         <? if ($fieldName): ?>
-            data-field="<?= $fieldName ?>"
+            data-delete-field-name="<?= $fieldName ?>"
         <? endif ?>></i>
 </li>

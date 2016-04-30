@@ -32,7 +32,7 @@
     margin-bottom: 10px;
 }
 .galleryPreviewList img[data-edit-url] {
-    height: 200px;
+    height: 120px;
     cursor: pointer;
 }
 .galleryPreviewList i {
@@ -48,4 +48,8 @@
 }
 .fileDelete {
     cursor: pointer;
+}
+.panel-image {
+    height: 814px;
+    overflow-y: auto;
 }

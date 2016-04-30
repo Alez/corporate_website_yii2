@@ -3,7 +3,7 @@
 namespace common\modules\files\behaviors;
 
 use yii\web\UploadedFile;
-use common\modules\files\models\Files;
+use common\modules\files\models\ImageRecord;
 use yii\helpers\ArrayHelper;
 use Yii;
 
@@ -31,8 +31,8 @@ use Yii;
 class SingleImageHandler extends AbstractImageHandler
 {
     /**
-     * Сохранит поле со множественными картинками в БД.
-     * Создаст запись в табличе Files, заберёт оттуда новый ID и поместит в поле таблицы указаное в attributes
+     * Сохранит поле со картинкой в БД.
+     * Создаст запись в таблице Files, заберёт оттуда новый ID и поместит в поле таблицы указаное в attributes
      *
      * @param $event
      * @throws \Exception
@@ -44,15 +44,18 @@ class SingleImageHandler extends AbstractImageHandler
                 throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
 
+
             if ($event->sender->$propertyName) {
                 if ($fileId = $event->sender->getOldAttribute($fieldName)) {
-                    $oldFile = Files::findOne($fileId);
+                    $oldFile = ImageRecord::findOne($fileId);
                     if ($oldFile) {
                         $oldFile->delete();
                     }
                 }
-                $newFileId = (new Files())->addFile($event->sender->$propertyName, $event->sender->className());
-                $event->sender->setAttribute($fieldName, $newFileId);
+
+                if ($newFile = ImageRecord::addFile($event->sender->$propertyName, $event->sender->className())) {
+                    $event->sender->setAttribute($fieldName, $newFile->id);
+                }
             }
         }
     }
@@ -95,8 +98,8 @@ class SingleImageHandler extends AbstractImageHandler
     public function beforeDelete($event)
     {
         foreach (array_keys($this->attributes) as $fieldName) {
-            if ($fileId = $this->owner->getAttribute($fieldName)) {
-                if ($file = Files::findOne($fileId)) {
+            if ($fileId = $event->sender->getAttribute($fieldName)) {
+                if ($file = ImageRecord::findOne(['id' => $fileId])) {
                     $file->delete();
                 }
             }

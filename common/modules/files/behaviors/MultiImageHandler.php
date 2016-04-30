@@ -3,7 +3,7 @@
 namespace common\modules\files\behaviors;
 
 use yii\web\UploadedFile;
-use common\modules\files\models\Files;
+use common\modules\files\models\ImageRecord;
 use yii\helpers\ArrayHelper;
 use Yii;
 
@@ -32,7 +32,7 @@ class MultiImageHandler extends AbstractImageHandler
 {
     /**
      * Сохранит поле со множественными картинками в БД.
-     * Создаст запись в табличе Files, заберёт оттуда новый ID и поместит в поле таблицы указаное в attributes
+     * Создаст запись в таблице Files, заберёт оттуда новый ID и поместит в поле таблицы указаное в attributes
      *
      * @param $event
      */
@@ -48,7 +48,9 @@ class MultiImageHandler extends AbstractImageHandler
             if ($event->sender->$propertyName && $event->sender->{$propertyName}[0] !== '') {
                 $newFilesIdArray = [];
                 foreach ($event->sender->$propertyName as $file) {
-                    $newFilesIdArray[] = (new Files())->addImage($file, $event->sender->className(), null, null);
+                    if ($newImage = ImageRecord::addImage($file, $event->sender->className())) {
+                        $newFilesIdArray[] = $newImage->id;
+                    }
                 }
 
                 if ($event->sender->getAttribute($fieldName)) {
@@ -56,8 +58,28 @@ class MultiImageHandler extends AbstractImageHandler
                 } else {
                     $filesIdArray = [];
                 }
+
                 $filesIdArray = ArrayHelper::merge($filesIdArray, $newFilesIdArray);
+
                 $event->sender->setAttribute($fieldName, serialize($filesIdArray));
+            }
+            //do resort
+            if (isset($event->sender->photo_sort)){
+                if ($event->sender->getAttribute($fieldName)) {
+                    $filesIdArray = unserialize($event->sender->getAttribute($fieldName));
+                } else {
+                    $filesIdArray = [];
+                }
+
+                $newFilesIdArray = [];
+
+                foreach (explode(',',$event->sender->photo_sort) as $sort) {
+                    $newFilesIdArray[] = $filesIdArray[$sort];
+                    unset($filesIdArray[$sort]);
+                }
+                $newFilesIdArray = ArrayHelper::merge($newFilesIdArray, $filesIdArray);
+
+                $event->sender->setAttribute($fieldName, serialize($newFilesIdArray));
             }
         }
     }
@@ -83,15 +105,19 @@ class MultiImageHandler extends AbstractImageHandler
      *
      * @param string $propertyName Название свойства где лежат id файлов
      *
-     * @return Files[]|null
+     * @return ImageRecord[]|null
      */
     public function getFiles($propertyName)
     {
         $filesId = unserialize($this->owner->getAttribute($propertyName));
         if (is_array($filesId) && count($filesId) > 0) {
-            return Files::findAll($filesId);
+            $files =  ArrayHelper::index(ImageRecord::findAll($filesId),'id');
+            foreach ($filesId as $id) {
+                $result[] = $files[$id];
+            }
+            return $result;
         }
-        return null;
+        return [];
     }
 
     /**
@@ -100,17 +126,17 @@ class MultiImageHandler extends AbstractImageHandler
      * @param string $propertyName Название свойства где лежат id файлов
      * @param string $id ID файла
      *
-     * @return Files|null
+     * @return ImageRecord|null
      */
     public function getFile($propertyName, $id = null)
     {
         $filesId = unserialize($this->owner->getAttribute($propertyName));
         if (is_null($id) && isset($filesId[0])) {
-            return Files::findOne($filesId[0]);
+            return ImageRecord::findOne($filesId[0]);
         }
         $flippedArray = array_flip($filesId);
         if (isset($flippedArray[$id])) {
-            return Files::findOne($id);
+            return ImageRecord::findOne($id);
         }
         return null;
     }
@@ -138,7 +164,7 @@ class MultiImageHandler extends AbstractImageHandler
         foreach (array_keys($this->attributes) as $fieldName) {
             if ($filesId = unserialize($this->owner->getAttribute($fieldName))) {
                 foreach ($filesId as $fileId) {
-                    if ($file = Files::findOne($fileId)) {
+                    if ($file = ImageRecord::findOne($fileId)) {
                         $file->delete();
                     }
                 }

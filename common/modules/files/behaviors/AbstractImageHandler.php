@@ -4,7 +4,7 @@ namespace common\modules\files\behaviors;
 
 use yii\base\Behavior;
 use yii\db\BaseActiveRecord;
-use common\modules\files\models\Files;
+use common\modules\files\models\ImageRecord;
 
 abstract class AbstractImageHandler extends Behavior
 {
@@ -59,8 +59,8 @@ abstract class AbstractImageHandler extends Behavior
                     $this->owner->setAttribute($fieldName, null);
                 }
                 $this->owner->updateAttributes([$fieldName]);
-                if (Files::findOne($fileId)->delete()) {
-                    if ($originalFile = Files::findOne($originalFileId)) {
+                if (ImageRecord::findOne($fileId)->delete()) {
+                    if ($originalFile = ImageRecord::findOne($originalFileId)) {
                         $originalFile->delete();
                     }
 
@@ -71,7 +71,7 @@ abstract class AbstractImageHandler extends Behavior
             $fileId = $this->owner->getAttribute($fieldName);
             $this->owner->setAttribute($fieldName, null);
             $this->owner->updateAttributes([$fieldName]);
-            if (Files::findOne($fileId)->delete()) {
+            if (ImageRecord::findOne($fileId)->delete()) {
                 return true;
             }
         }

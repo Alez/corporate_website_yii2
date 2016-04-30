@@ -2,19 +2,14 @@
 
 namespace common\modules\files\widgets\fileinput;
 
-use common\modules\files\models\Files;
+use common\modules\files\models\FileRecord;
 use Yii;
 use yii\widgets\InputWidget;
 use yii\helpers\Html;
 
-/**
- * Виджет для загрузки файлов и показа загруженных ранее
- *
- * @package common\modules\files\widgets\fileinput
- */
 class FileInput extends InputWidget
 {
-    /* @var \common\modules\files\models\Files|\common\modules\files\models\Files[] Откуда брать изображения для превью */
+    /* @var \common\modules\files\models\FileRecord|\common\modules\files\models\FileRecord[] Откуда брать изображения для превью */
     public $fileSource;
 
     /* @var string Поле где хранится номер файла */
@@ -23,7 +18,7 @@ class FileInput extends InputWidget
     public function init()
     {
         if (!isset($this->fileSource) && $this->hasModel()) {
-            $this->fileSource = Files::findOne($this->model->{$this->fieldName});
+            $this->fileSource = FileRecord::findOne($this->model->{$this->fieldName});
         }
 
         if (isset($this->options['class'])) {

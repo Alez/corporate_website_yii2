@@ -2,19 +2,14 @@
 
 namespace common\modules\files\widgets\imageinput;
 
-use common\modules\files\models\Files;
+use common\modules\files\models\ImageRecord;
 use Yii;
 use yii\widgets\InputWidget;
 use yii\helpers\Html;
 
-/**
- * Виджет для загрузки картинок с превью и для показа загруженных ранее
- *
- * @package common\modules\files\widgets\imageinput
- */
 class ImageInput extends InputWidget
 {
-    /* @var \common\modules\files\models\Files|\common\modules\files\models\Files[] Откуда брать изображения для превью */
+    /* @var \common\modules\files\models\FileRecord|\common\modules\files\models\ImageRecord[] Откуда брать изображения для превью */
     public $imageSource;
 
     /* @var string Поле где хранится номер файла */
@@ -23,11 +18,7 @@ class ImageInput extends InputWidget
     public function init()
     {
         if (!isset($this->imageSource) && $this->hasModel()) {
-            if (isset($this->options['multiple'])) {
-                $this->imageSource = $this->model->getFiles($this->fieldName);
-            } else {
-                $this->imageSource = Files::findOne($this->model->{$this->fieldName});
-            }
+            $this->imageSource = ImageRecord::findOne($this->model->{$this->fieldName});
         }
 
         if (isset($this->options['class'])) {
