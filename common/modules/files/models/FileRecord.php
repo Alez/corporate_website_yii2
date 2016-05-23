@@ -102,7 +102,7 @@ class FileRecord extends \yii\db\ActiveRecord
      *
      * @return FileRecord|false
      */
-    public static function addFile($file, $modelClassName, $alt = null, $title = null)
+    public static function addFile($file, $modelClassName, $alt = null, $title = null, $groupId = null)
     {
         $shortModelClassName = strtolower((new \ReflectionClass($modelClassName))->getShortName());
         $path = self::makeHashPath();
@@ -115,11 +115,12 @@ class FileRecord extends \yii\db\ActiveRecord
             }
             $fileRecord = new self();
             $fileRecord->load([
-                'model' => $shortModelClassName,
-                'name' => $name,
-                'path' => $path,
-                'alt' => $alt,
-                'title' => $title,
+                'model'    => $shortModelClassName,
+                'name'     => $name,
+                'path'     => $path,
+                'alt'      => $alt,
+                'title'    => $title,
+                'group_id' => $groupId,
             ], '');
 
             if ($fileRecord->save()) {
@@ -319,5 +320,14 @@ class FileRecord extends \yii\db\ActiveRecord
     public function getFileType()
     {
         return finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->getFsPath());
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->mime = $this->getFileType();
+        }
+
+        return parent::beforeSave($insert);
     }
 }

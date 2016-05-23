@@ -2,13 +2,13 @@
 
 namespace common\modules\files\behaviors;
 
+use common\modules\files\models\FileRecord;
 use yii\web\UploadedFile;
 use common\modules\files\models\ImageRecord;
-use yii\helpers\ArrayHelper;
 use Yii;
 
 /**
- * Используется для реализации функционала сохранения, добавления и просмотра изображений при помощи модуля Files
+ * Используется для реализации функционала удаление и добавления изображений по событиям
  * Пример использования:
  * ```php
  *      public function behaviors()
@@ -44,10 +44,9 @@ class SingleImageHandler extends AbstractImageHandler
                 throw new \Exception('В модели "' . $event->sender->className() . '" необходимо создать свойство с именем "' . $propertyName . '"');
             }
 
-
             if ($event->sender->$propertyName) {
                 if ($fileId = $event->sender->getOldAttribute($fieldName)) {
-                    $oldFile = ImageRecord::findOne($fileId);
+                    $oldFile = FileRecord::findOne($fileId);
                     if ($oldFile) {
                         $oldFile->delete();
                     }
@@ -75,18 +74,6 @@ class SingleImageHandler extends AbstractImageHandler
 
             $event->sender->$propertyName = UploadedFile::getInstance($event->sender, $propertyName);
         }
-    }
-
-    /**
-     * Вернёт все id файлов продукта в виде массива
-     *
-     * @param string $propertyName Название поля откуда брать id файлов
-     *
-     * @return array
-     */
-    public function getFilesId($propertyName)
-    {
-        return ArrayHelper::getColumn($this->owner->getFiles($propertyName), 'id');
     }
 
     /**

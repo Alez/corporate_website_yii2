@@ -27,7 +27,7 @@ class ImageInput extends InputWidget
             $this->options['class'] = 'imageInput-js';
         }
 
-        // Магия, что бы одиночная картинка точно так же как и множественные была в массиве
+        // Чтобы одиночная картинка точно так же как и множественные была в массиве
         if (!is_array($this->imageSource)) {
             $this->imageSource = [$this->imageSource];
         }

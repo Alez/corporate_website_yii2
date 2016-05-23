@@ -2,17 +2,17 @@
 
 namespace common\modules\files\controllers;
 
+use common\modules\files\models\FileRecord;
 use Yii;
 use yii\helpers\Json;
 use yii\web\Controller;
-use common\modules\files\models\ImageRecord;
 
 class ImageController extends Controller
 {
     public function actionImageeditpopup($id)
     {
-        /** @var ImageRecord $image */
-        $image = ImageRecord::findOne($id);
+        /** @var \common\modules\files\models\ImageRecord $image */
+        $image = FileRecord::findOne($id);
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = 'json';
             $cropData = Json::decode(Yii::$app->request->getBodyParam('cropData'));
