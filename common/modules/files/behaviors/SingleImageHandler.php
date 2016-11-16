@@ -37,7 +37,7 @@ class SingleImageHandler extends AbstractImageHandler
      * @param $event
      * @throws \Exception
      */
-    public function beforeSave($event)
+    public function afterSave($event)
     {
         foreach ($this->attributes as $fieldName => $propertyName) {
             if (!property_exists($event->sender, $propertyName)) {
@@ -46,14 +46,13 @@ class SingleImageHandler extends AbstractImageHandler
 
             if ($event->sender->$propertyName) {
                 if ($fileId = $event->sender->getOldAttribute($fieldName)) {
-                    $oldFile = FileRecord::findOne($fileId);
-                    if ($oldFile) {
+                    if ($oldFile = FileRecord::findOne($fileId)) {
                         $oldFile->delete();
                     }
                 }
 
                 if ($newFile = ImageRecord::addFile($event->sender->$propertyName, $event->sender->className())) {
-                    $event->sender->setAttribute($fieldName, $newFile->id);
+                    $event->sender->updateAttributes([$fieldName => $newFile->id]);
                 }
             }
         }

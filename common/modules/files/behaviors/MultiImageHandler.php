@@ -37,7 +37,7 @@ class MultiImageHandler extends AbstractImageHandler
      *
      * @param $event
      */
-    public function beforeSave($event)
+    public function afterSave($event)
     {
         foreach ($this->attributes as $propertyName) {
             if (!property_exists($event->sender, $propertyName)) {
@@ -46,6 +46,7 @@ class MultiImageHandler extends AbstractImageHandler
         }
 
         foreach ($this->attributes as $fieldName => $propertyName) {
+            $transaction = Yii::$app->db->beginTransaction();
             if ($event->sender->$propertyName && $event->sender->{$propertyName}[0] !== '') {
                 if (!($groupId = $event->sender->getAttribute($fieldName))) {
                     $groupId = (new Query())->from(FileRecord::tableName())->max('group_id') ?? 0;
@@ -64,8 +65,9 @@ class MultiImageHandler extends AbstractImageHandler
                         $groupId
                     );
                 }
-                $event->sender->setAttribute($fieldName, $groupId);
+                $event->sender->updateAttributes([$fieldName => $groupId]);
             }
+            $transaction->commit();
         }
     }
 

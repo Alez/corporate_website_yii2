@@ -108,9 +108,9 @@ class ImageRecord extends FileRecord
             self::resize($uploadedFile, $width, $height, $quality, $mode);
 
             return $uploadedFile;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function getThumbSrc($width, $height, $mode = self::EXACT)

@@ -26,9 +26,9 @@ abstract class AbstractImageHandler extends Behavior
     {
         return [
             BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
-            BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
-            BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
             BaseActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+            BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
         ];
     }
 
@@ -80,6 +80,6 @@ abstract class AbstractImageHandler extends Behavior
     }
 
     abstract public function beforeValidate($event);
-    abstract public function beforeSave($event);
+    abstract public function afterSave($event);
     abstract public function beforeDelete($event);
 }
